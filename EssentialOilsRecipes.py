@@ -9,34 +9,39 @@ def Baze():
     return baze
     file.close()
 # Выбор пользователя
-while True:
-    choise = input("""\
-    [Н] Cоздать новый рецепт.
-    [И] Найти все рецепты с заданным ингридиетнтом.
-    [А] Показать все рецепты.
+print("""\
+    [С] Cоздать новый рецепт.
+    [Н] Найти все рецепты с заданным ингридиетнтом.
+    [П] Показать все рецепты.
     [У] Удалить рецепт.
-    [В] Завершить программу.
+    [З] Завершить программу.
     """)
-    # Создание нового рецепта
-    if choise == ('н' or 'Н'):
+while True:
+    choise = input()
+# Создание нового рецепта
+    if choise == ('с' or 'С'):
         with open("baze.txt", "a") as file:
             file.write(input("Название рецепта: "))
             file.write(":")
             file.write(input("Введите ингридиенты через запятую без пробелов: "))
-    # Найти рецепты с ингредиентами
-    elif choise == ('и' or 'И'):
+            file.write("\n")
+        print(f"Рецепт создан в базе\n")
+# Найти рецепты с ингредиентами
+    elif choise == ('н' or 'Н'):
         Baze()
         search = input("Введите название ингридиента: ")
         listOfrecipesNames = [key for (key, value) in baze.items() if search in value]
         for name in listOfrecipesNames:
             print(name, baze[name])
-    # Вывод всех рецептов в алфавитном порядке
-    elif choise == ('а' or 'А'):
+        print()
+# Вывод всех рецептов в алфавитном порядке
+    elif choise == ('п' or 'П'):
         baze = Baze()
         keys = sorted(baze)
         for item in keys:
             print(item, baze[item])
-    # Удаление рецепта
+        print()
+# Удаление рецепта
     elif choise == ('у' or 'У'):
         delete = input("Введите название рецепта, который необходимо удалить: ")
         with open("baze.txt", "r+") as file:
@@ -46,7 +51,9 @@ while True:
                 if line[:len(delete)] != delete:
                     file.write(line)
             file.truncate()
-        print(f"Рецепт '{delete}' удален.")
-    # Завершить программу
-    elif choise == 'В':
+        print(f"Рецепт '{delete}' удален.\n")
+# Завершить программу
+    elif choise == ('З' or 'з'):
         exit()
+    else:
+        print("Такого варианта нет, введите команду правильно\n")
