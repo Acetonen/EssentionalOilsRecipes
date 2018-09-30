@@ -25,7 +25,7 @@ def Delete(fileName, delete):
 # Красивый вывод данных на экран
 def BeautyPrint(name):
     baze = Data('baze.txt')
-    print(name, end=': ')
+    print(f"{name}{(MaxLength(baze)-len(name)+1)*' '}", end=': ')
     for key in baze[name]:
         print(f"{key} - {baze[name][key]}к;", end=' ')
     print()
@@ -45,9 +45,26 @@ def Recipes():
     baze = Data('baze.txt') # подгружаем базу из файла
     keys = sorted(baze) # создаем лист из отсортированных ключей
     for count, oil in enumerate(keys,1):
-        print(f"[{count}]", end=' ') # номер в списке
+        # добавляем пробел после номера рецепта для ровного отображения таблицы
+        if count<10: spase = " "
+        else: spase = ''
+        print(f"[{count}] {spase}", end=' ') # номер в списке
         print(f"{rateDict.get(oil, '0')}/10", end=' ') # рейтинг рецепта
         BeautyPrint(oil) # ингридиенты в рецепте
+
+# Нахождение элемента списка максимальной длины
+def MaxLength(array):
+    mL = 0
+    try: # если аргументом выступает лист
+        for i in array:
+            if len(i) > mL:
+                mL = len(i)
+    except: # если аргументом выступает словарь
+        length = [key for (key, value) in array.items()]
+        for i in length:
+            if len(i) > mL:
+                mL = len(i)
+    return mL
 
 # Главное меню программы
 mainMenu = """\
@@ -192,14 +209,28 @@ while True:
                 # Формируем лист из всех ингредиентов в рецептах (без повторов)
                 for i in baze:
                     listOfIngredients += list(baze[i].keys())
-                listOfIngredients = sorted(set(listOfIngredients))
-                # Ищем отсутствующие ингредиенты из нашей коллекции
-                for i in range(len(listOfIngredients)):
-                    print(listOfIngredients[i], end=' ')
-                    if listOfIngredients[i] not in Data('collection.txt'):
-                        print(" - отсутствует.")
-                    else: print()
+                # Подсчитываем частоту встречаемости ингредиентов в рецептах
+                ingredientsCounter = {i: listOfIngredients.count(i) for i in listOfIngredients}
+                # Группируем ингридиенты по частоте встречаемости
+                reverseCounter = {}
+                for k, v in ingredientsCounter.items():
+                    reverseCounter[v] = reverseCounter.get(v, [])
+                    reverseCounter[v].append(k)
+                # Создаем сортировочный лист по частоте встречаемости
+                priority = list(reversed(sorted([key for (key, value) in reverseCounter.items()])))
+                # Выводим список ингридиентов по частоте встречаемости в рецептах
+                # и проверяем наличие ингридиентов в коллекции
+                for position in priority:
+                    for ingredient in reverseCounter[position]:
+                        print(f"""\
+{ingredient}{(MaxLength(listOfIngredients) - len(ingredient) + 1) * ' '}\
+(в {position} рецептах)\
+""", end=' ')
+                        if ingredient not in Data('collection.txt'):
+                            print(" - отсутствует в коллекции.")
+                        else: print()
                 print(miniCollectionMenu)
+            # Показать меню коллекции
             elif choise == ('к' or 'К'):
                 Collection()
             # Возвращаемся в главное меню
