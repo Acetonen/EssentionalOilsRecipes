@@ -1,6 +1,5 @@
 from sys import exit
 import json
-import suggestions
 
 # Загрузка базы данных или списка ингредиентов из файла
 def Data(fileName):
@@ -25,7 +24,7 @@ def Delete(fileName, delete):
 
 # Красивый вывод данных на экран
 def BeautyPrint(name):
-    baze = Data('baze.txt')
+    baze = Data('data/baze.txt')
     print(f"{name}{(MaxLength(baze)-len(name)+1)*' '}", end=': ')
     for key in baze[name]:
         print(f"{key} - {baze[name][key]}к;", end=' ')
@@ -33,7 +32,7 @@ def BeautyPrint(name):
 
 # Отображение пронумерованной и отсортированной колекции ингредиентов
 def Collection():
-    coll = sorted(Data('collection.txt'))
+    coll = sorted(Data('data/collection.txt'))
     print("Моя коллекция:")
     for count, oil in enumerate(coll,1):
         print(f"[{count}] {oil}")
@@ -41,9 +40,9 @@ def Collection():
 
 # Отображение пронумерованной и отсортированной коллекции рецептов
 def Recipes():
-    try: rateDict = Data('rate.txt')
+    try: rateDict = Data('data/rate.txt')
     except: rateDict = {}
-    baze = Data('baze.txt') # подгружаем базу из файла
+    baze = Data('data/baze.txt') # подгружаем базу из файла
     keys = sorted(baze) # создаем лист из отсортированных ключей
     for count, oil in enumerate(keys,1):
         # добавляем пробел после номера рецепта для ровного отображения таблицы
@@ -67,54 +66,35 @@ def MaxLength(array):
                 mL = len(i)
     return mL
 
-# Главное меню программы
-mainMenu = """
-                    ГЛАВНОЕ МЕНЮ
-****************************************************
-    [С] Cоздать новый рецепт
-    [П] Показать все рецепты
-    [В] Показать рецепты с ингредиентами из коллекции
-    [У] Удалить рецепт
-    [К] Показать мою коллекцию масел
-    [Р] Поставить рейтинг рецепту
-    [З] Завершить программу
-****************************************************
-                                        EOR ver.1.12
-    """
-# Уменьшенное главное меню
-miniMenu = """\
-****************************************************
-[С]-нов.рецепт [П]-все рецепты [В]-возможные рецепты
-[У]-уд. рецепт [К]-моя коллекц.[Р]-поставить рейтинг
-[З]-завершить прогр.
-"""
-# Меню коллекций
-collectionMenu = """
-                    МЕНЮ КОЛЛЕКЦИИ
-----------------------------------------------------
-    [Д] Добавить масло в коллекцию
-    [У] Удалить масло из коллекции
-    [Н] Найти все рецепты с заданным ингредиетнтом
-    [О] Показать лист отсутсвующих ингредиентов
-    [М] Вернуться в основное меню программы
-    [З] Завершить программу
-----------------------------------------------------
-"""
-# Уменьшенное меню коллекций
-miniCollectionMenu = """
-----------------------------------------------------
-[Д]-добав.масло [У]-удл.масло [Н]-найти рецепты
-[О]-отсут.ингр. [М]-меню      [К]-показать колекцию
-[З]-завершить прогр.
-"""
+# Выбор языка программы
+print("""
+Choose the languege / Выберете язык
+[E] - English
+[R] - Russian
+""")
+languege = input("")
+if languege == 'r' or languege == 'R':
+    import localisations.RUS as RUS
+    try: import localisations.suggestions_RU
+    except: print("Здравствуте!")
+    mainMenu = RUS.mainMenu # Главное меню программы
+    miniMenu = RUS.miniMenu # Уменьшенное главное меню
+    collectionMenu = RUS.collectionMenu # Меню коллекций
+    miniCollectionMenu = RUS.miniCollectionMenu # Уменьшенное меню коллекций
+elif languege == 'e' or languege == 'E':
+    import localisations.EN as EN
+    mainMenu = EN.mainMenu # Главное меню программы
+    miniMenu = EN.miniMenu # Уменьшенное главное меню
+    collectionMenu = EN.collectionMenu # Меню коллекций
+    miniCollectionMenu = EN.miniCollectionMenu # Уменьшенное меню коллекций
 
 # ГЛАВНОЕ МЕНЮ
 print(mainMenu)
 while True:
     choise = input()
 # Создание нового рецепта
-    if choise == ('с' or 'С'):
-        baze = Data('baze.txt')
+    if choise == 'с' or choise == 'С' or choise == 'c' or choise == 'C':
+        baze = Data('data/baze.txt')
         name = input("Название рецепта: ")
         ingredientList = {}
         while True:
@@ -123,25 +103,25 @@ while True:
             drop = input("количество капель: ")
             ingredientList[ingredient] = drop
         baze[name] = ingredientList
-        SaveData("baze.txt", baze)
+        SaveData("data/baze.txt", baze)
         print(f"\nРецепт записан в базу.\n")
         print(miniMenu)
 # Вывод всех рецептов в алфавитном порядке
-    elif choise == ('п' or 'П'):
+    elif choise == 'п' or choise == 'П' or choise == 's' or choise == 'S':
         Recipes()
         print(miniMenu)
 # Удаление рецепта
-    elif choise == ('у' or 'У'):
-        keys = sorted(Data('baze.txt')) # пронумерованный список рецептов
+    elif choise == 'у' or choise == 'У' or choise == 'r' or choise == 'R':
+        keys = sorted(Data('data/baze.txt')) # пронумерованный список рецептов
         choise = int(input("Введите номер рецепта, который необходимо удалить: "))
-        Delete("baze.txt", keys[choise - 1])
-        Delete("rate.txt", keys[choise - 1])
+        Delete("data/baze.txt", keys[choise - 1])
+        Delete("data/rate.txt", keys[choise - 1])
         print(f"\nРецепт '{keys[choise - 1]}' удален.\n")
         print(miniMenu)
 # Только те рецепты, на которых достаточно ингредиентов
-    elif choise == ('в' or 'В'):
-        coll = Data('collection.txt') # подгружаем коллекцию из файла
-        baze = Data('baze.txt') # подгружаем базу из файла
+    elif choise == 'в' or choise == 'В' or choise == 'i' or choise == 'I':
+        coll = Data('data/collection.txt') # подгружаем коллекцию из файла
+        baze = Data('data/baze.txt') # подгружаем базу из файла
         # Ищем ингредиенты из базы в списке доступных
         mainFlag = True
         for name in baze:
@@ -157,43 +137,43 @@ while True:
             print("\nПохоже, что у Вас ни на что не хватает ингредиентов :'(\n")
         print(miniMenu)
 # Рейтинг рецепту
-    elif choise == ('р' or 'Р'):
-        try: rateDict = Data('rate.txt')
+    elif choise == 'р' or choise == 'Р' or choise == 'g' or choise == 'G':
+        try: rateDict = Data('data/rate.txt')
         except: rateDict = {}
-        keys = sorted(Data('baze.txt'))
+        keys = sorted(Data('data/baze.txt'))
         choise = int(input("Ведите номер рецепта: "))
         rate = input("Введите оценку (из 10-ти): ")
         rateDict[keys[choise - 1]] = rate
-        SaveData('rate.txt', rateDict)
+        SaveData('data/rate.txt', rateDict)
         print(miniMenu)
 
 # МЕНЮ КОЛЛЕКЦИИ
-    elif choise == ('к' or 'К'):
+    elif choise == 'к' or choise == 'К' or choise == 'o' or choise == 'O':
         print(collectionMenu)
         Collection()
         while True:
             choise = input()
             # Удаляем ингридиент из коллекции
-            if choise == ('у' or 'У'):
-                coll = sorted(Data('collection.txt'))
+            if choise == 'у' or choise == 'У' or choise == 'r' or choise == 'R':
+                coll = sorted(Data('data/collection.txt'))
                 n = int(input("Введите номер удаляемого ингридиента: "))
                 delete = coll[n - 1]
-                Delete("collection.txt", delete)
+                Delete("data/collection.txt", delete)
                 Collection()
                 print(f"\nИнгридиент '{delete}' удален.")
                 print(miniCollectionMenu)
             # Добавляем ингридиент в коллекцию
-            elif choise == ('д' or 'Д'):
-                listOfrecipes = Data('collection.txt')
+            elif choise == 'д' or choise == 'Д' or choise == 'a' or choise == 'A':
+                listOfrecipes = Data('data/collection.txt')
                 listOfrecipes.append(input("Введите название ингредиента: "))
-                SaveData('collection.txt', listOfrecipes)
+                SaveData('data/collection.txt', listOfrecipes)
                 print()
                 Collection()
                 print(miniCollectionMenu)
             # Найти рецепты с ингредиентами
-            elif choise == ('н' or 'Н'):
-                baze = Data('baze.txt') # подгружаем базу из файла
-                coll = sorted(Data('collection.txt')) # подгружаем отсортированную коллекцию
+            elif choise == 'н' or choise == 'Н' or choise == 'f' or choise == 'F':
+                baze = Data('data/baze.txt') # подгружаем базу из файла
+                coll = sorted(Data('data/collection.txt')) # подгружаем отсортированную коллекцию
                 n = int(input("Введите номер ингредиента: "))
                 search = coll[n - 1]
                 print(f"\nРецепты, содержащие '{search}':\n")
@@ -204,8 +184,8 @@ while True:
                     BeautyPrint(name)
                 print(miniCollectionMenu)
             # Показываем список всех ингредиентов в рецептах и помечаем отсутствующие
-            elif choise == ('о' or 'О'):
-                baze = Data('baze.txt') # подгружаем базу из файла
+            elif choise == 'о' or choise == 'О' or choise == 's' or choise == 'S':
+                baze = Data('data/baze.txt') # подгружаем базу из файла
                 listOfIngredients = []
                 # Формируем лист из всех ингредиентов в рецептах (без повторов)
                 for i in baze:
@@ -227,24 +207,24 @@ while True:
 {ingredient}{(MaxLength(listOfIngredients) - len(ingredient) + 1) * ' '}\
 (в {position} рецептах)\
 """, end=' ')
-                        if ingredient not in Data('collection.txt'):
+                        if ingredient not in Data('data/collection.txt'):
                             print(" - отсутствует в коллекции.")
                         else: print()
                 print(miniCollectionMenu)
             # Показать меню коллекции
-            elif choise == ('к' or 'К'):
+            elif choise == 'к' or choise == 'К' or choise == 'o' or choise == 'O':
                 Collection()
             # Возвращаемся в главное меню
-            elif choise == ('м' or 'М'):
+            elif choise == 'м' or choise == 'М' or choise == 'm' or choise == 'M':
                 print(mainMenu)
                 break
             # Ошибка ввода буквы
-            elif choise == ('З' or 'з'): exit()
+            elif choise == 'з' or choise == 'З' or choise == 'e' or choise == 'E': exit()
             else:
                 print("Такого варианта нет, введите команду правильно\n")
 
 # Завершить программу
-    elif choise == ('З' or 'з'): exit()
+    elif choise == 'з' or choise == 'З' or choise == 'e' or choise == 'E': exit()
 
 
 
