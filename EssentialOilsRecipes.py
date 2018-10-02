@@ -3,13 +3,14 @@ import json
 
 # Загрузка базы данных или списка ингредиентов из файла
 def Data(fileName):
-        with open(fileName) as file:
+        # Обязательное указание кодировки для винды
+        with open(fileName, 'r', encoding='utf8') as file:
             data = json.load(file)
         return data
 
 # Запись базы данных или списка ингредиентов в файл
 def SaveData(fileName, data):
-        with open(fileName, 'w') as file:
+        with open(fileName, 'w', encoding='utf8') as file:
             json.dump(data, file)
 
 # Удаление элемента из базы данных или списка ингредиентов

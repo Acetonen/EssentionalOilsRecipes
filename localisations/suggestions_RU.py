@@ -3,7 +3,7 @@ import json
 
 # Создание списка из элеменнов базы, отобранных по тэгам
 def Suggest(tags):
-    with open('data/baze.txt') as file:
+    with open('data/baze.txt', 'r', encoding='utf8') as file:
         baze = json.load(file)
     bazeList = [key.lower() for (key, value) in baze.items()]
     suggestionList = ''
