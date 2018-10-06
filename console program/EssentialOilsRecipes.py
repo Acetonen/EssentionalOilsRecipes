@@ -88,7 +88,6 @@ def MainMeny(choise):
     This is the main meny of it program.
     You can go to "Collections" sub-meny, or working here.
     """
-
     if (choise == 'с' or choise == 'С' or
         choise == 'c' or choise == 'C'):
         # Creation of new recipe.
