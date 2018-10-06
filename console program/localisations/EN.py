@@ -1,5 +1,5 @@
-# Главное меню программы
-mainMenu = """
+
+main_meny = """
                     MAIN MENY
 ****************************************************
     [C] Create new recipe
@@ -12,15 +12,13 @@ mainMenu = """
 ****************************************************
                                         EOR ver.1.13
     """
-# Уменьшенное главное меню
-miniMenu = """\
+mini_meny = """\
 ****************************************************
 [C]-new recipe [S]-all recipes [I]-rec. with my oils
 [R]-rm. recipe [O]-oils collec.[G]-give a rate
 [E]-exit program
 """
-# Меню коллекций
-collectionMenu = """
+collection_meny = """
                     COLLECTION MENY
 ----------------------------------------------------
     [A] Add oil into collection
@@ -32,8 +30,7 @@ collectionMenu = """
     [E] Exit program
 ----------------------------------------------------
 """
-# Уменьшенное меню коллекций
-miniCollectionMenu = """
+mini_collection_meny = """
 ----------------------------------------------------
 [A]-add oil    [R]-rm. oil [F]-find all recipes
 [S]-out oils   [М]-меню    [O]-oils collection

@@ -1,31 +1,31 @@
-from datetime import datetime
+import datetime
 import json
 
-# Создание списка из элеменнов базы, отобранных по тэгам
-def Suggest(tags):
-    with open('data/baze.txt', 'r', encoding='utf8') as file:
-        baze = json.load(file)
-    bazeList = [key.lower() for (key, value) in baze.items()]
-    suggestionList = ''
-    for item in bazeList:
+# Creation liistst of elements from base by tegs.
+def suggest(tags):
+    with open('data/base.txt', 'r', encoding='utf8') as file:
+        base = json.load(file)
+    base_list = [key.lower() for (key, value) in base.items()]
+    suggestion_list = ''
+    for item in base_list:
         for tag in tags:
             if tag in item:
-                suggestionList += item + "; "
-    return suggestionList
+                suggestion_list += item + "; "
+    return suggestion_list
 
-# Определяем текущий месяц
-currentMonth = datetime.now().month
-monthList = (' ', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+# Find current month.
+current_month = datetime.datetime.now().month
+month_list = (' ', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
             'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь')
 
-# Если осень
-if 9 <= currentMonth <= 11:
-    tagList = ['осень', 'осенний', 'осеннее', 'осенние', 'осенняя', 'сентябрь',
+# Outumn.
+if 9 <= current_month <= 11:
+    month_list = ['осень', 'осенний', 'осеннее', 'осенние', 'осенняя', 'сентябрь',
                'октябрь', 'ноябрь', 'сентября', 'октября', 'ноября',
                'сентябрьский', 'октябрьский', 'ноябрьский', 'свитер', 'листопад']
-    suggestionList = Suggest(tagList)
-    if suggestionList == '':
-        suggestionList = "добавить в ваши рецепты что-то осенее;)"
+    suggestion_list = suggest(month_list)
+    if suggestion_list == '':
+        suggestion_list = "добавить в ваши рецепты что-то осенее;)"
     print(f"""
 _________________¶
 ________________¶¶
@@ -44,23 +44,23 @@ ___¶¶¶¶¶¶¶¶¶¶¶¶¶|¶¶¶/¶¶¶¶/¶¶¶¶¶
 _¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶|¶¶/¶¶¶/¶¶¶¶¶¶¶¶¶¶
 ________¶¶¶¶¶¶¶¶|¶/¶/¶¶¶¶¶¶
 _______________¶¶
-______________¶¶      На дворе {monthList[currentMonth]}, осень.
+______________¶¶      На дворе {month_list[current_month]}, осень.
 ______________¶¶     самое время приготовить что-то уютное,
 ______________¶¶     бодрящее из ваших рецептов.
 _______________¶¶     Рекомендуем:
-________________¶¶¶     {suggestionList}
+________________¶¶¶     {suggestion_list}
     """)
 
- # Если зима
-elif currentMonth == 12 or currentMonth == 1 or currentMonth == 2:
-    tagList = ['зима', 'зимний', 'зимнее', 'зимние',
+ # Winter.
+elif current_month == 12 or current_month == 1 or current_month == 2:
+    month_list = ['зима', 'зимний', 'зимнее', 'зимние',
                 'зимняя', 'январь', 'декабрь', 'февраль', 'декабря', 'января',
                 'февраля', 'декабрьский', 'январский', 'февральский', 'свитер',
                 'снег', 'снегопад', 'иней', 'зимушка', 'Зимушка',
                 'новый год', 'новым годом', 'рождество', 'рождественский']
-    suggestionList = Suggest(tagList)
-    if suggestionList == '':
-        suggestionList = "добавить в ваши рецепты что-то зимнее;)"
+    suggestion_list = suggest(month_list)
+    if suggestion_list == '':
+        suggestion_list = "добавить в ваши рецепты что-то зимнее;)"
     print(f"""
 _____________________$$
 _____________________$$
@@ -81,22 +81,22 @@ _____$$$$$$__________$$__ ________$$$$$$
 _$$$$$$__$$__________$$__________$$__$$$$$$
 _$$______$$__________$$__________$$______$$
 _________$$________$$$$$$_____ ___$$
-_________$$____$$$$$$$$$$$$$$____$$   На дворе {monthList[currentMonth]}, зима.
+_________$$____$$$$$$$$$$$$$$____$$   На дворе {month_list[current_month]}, зима.
 _____________$$$$____$$____$$$$       самое время приготовить что-то приятное,
 _____________________$$               согревающее из ваших рецептов.
 ___________
                 Рекомендуем:
-{suggestionList}
+{suggestion_list}
     """)
 
-# Если весна
-elif 3 <= currentMonth <= 5:
-   tagList = ['весна', 'весенний', 'весеннее', 'весенние',
+# Spring.
+elif 3 <= current_month <= 5:
+   month_list = ['весна', 'весенний', 'весеннее', 'весенние',
                'весенняя', 'март', 'апрель', 'май', 'марта', 'апреля',
                'мая', 'мартовский', 'апрельский', 'майский', 'свежий']
-   suggestionList = Suggest(tagList)
-   if suggestionList == '':
-       suggestionList = "добавить в ваши рецепты что-то весеннее;)"
+   suggestion_list = suggest(month_list)
+   if suggestion_list == '':
+       suggestion_list = "добавить в ваши рецепты что-то весеннее;)"
    print(f"""
 ______d$$$$b_d$$$$$b
 _____$$$$$$$$$$$$$$$$$
@@ -114,23 +114,23 @@ _________________ $
 __________________$$$$$_
 _________________$$$$$$$$ $
 __$$$$$$$_______$$$$$$
-_$$$$$$$$$__$$$$$       На дворе {monthList[currentMonth]}, весна.
+_$$$$$$$$$__$$$$$       На дворе {month_list[current_month]}, весна.
 $_ _____$$$$$       Самое время бодрящих, легкий ароматов!
 ________$$_$       Рекомендуем:
-_________$$$    {suggestionList}
+_________$$$    {suggestion_list}
 __________$$
 ___________$
    """)
 
-# Если лето
-elif 6 <= currentMonth <= 8:
-  tagList = ['лето', 'летний', 'летнее', 'летние',
+# Summer.
+elif 6 <= current_month <= 8:
+  month_list = ['лето', 'летний', 'летнее', 'летние',
               'летняя', 'июнь', 'июль', 'август', 'июля', 'июня',
               'августа', 'июньский', 'июльский', 'августовский', 'тропический',
               'тропики', 'экзотика', 'экзотический', 'отпуск']
-  suggestionList = Suggest(tagList)
-  if suggestionList == '':
-      suggestionList = "добавить в ваши рецепты что-то летнее;)"
+  suggestion_list = suggest(month_list)
+  if suggestion_list == '':
+      suggestion_list = "добавить в ваши рецепты что-то летнее;)"
   print(f"""
 ________________ ¶¶¶¶¶¶¶¶
 _______________ ¶¶¶¶
@@ -148,11 +148,11 @@ _________ ¶¶¶____¶¶¶__¶¶__¶
 _________ ¶¶¶_____¶¶___¶
 _________ ¶¶______¶¶
 _________________ ¶¶¶
-_________________ ¶¶¶       На дворе {monthList[currentMonth]}, лето.
+_________________ ¶¶¶       На дворе {month_list[current_month]}, лето.
 _________________ ¶¶¶      Самое время экзотических коктейлей и
 ________________ ¶¶¶¶      сладости фруктов!
 ________________ ¶¶¶       Рекомендуем:
-____________ ¶¶¶_¶¶¶      {suggestionList}
+____________ ¶¶¶_¶¶¶      {suggestion_list}
 ______________ ¶¶¶¶¶¶¶¶
 
   """)
