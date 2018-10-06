@@ -12,7 +12,7 @@ main_meny = """
 ****************************************************
                                         EOR ver.1.13
     """
-mini_meny = """\
+mini_main = """\
 ****************************************************
 [C]-new recipe [S]-all recipes [I]-rec. with my oils
 [R]-rm. recipe [O]-oils collec.[G]-give a rate
@@ -30,7 +30,7 @@ collection_meny = """
     [E] Exit program
 ----------------------------------------------------
 """
-mini_collection_meny = """
+mini_collection = """
 ----------------------------------------------------
 [A]-add oil    [R]-rm. oil [F]-find all recipes
 [S]-out oils   [М]-меню    [O]-oils collection
