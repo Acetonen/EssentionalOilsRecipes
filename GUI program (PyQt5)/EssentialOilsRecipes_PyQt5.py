@@ -1,10 +1,12 @@
 import sys
 import json
-from PyQt5.QtWidgets import QWidget, QPushButton, QApplication
+from PyQt5.QtWidgets import (QWidget, QPushButton, QApplication, qApp,
+                             QMessageBox, QDesktopWidget, QMainWindow,
+                             QAction)
 #PEP8
 
 
-class MainWindow(QWidget):
+class MainWindow(QMainWindow):
     """
     Main window of program.
     It contain main meny
@@ -16,66 +18,89 @@ class MainWindow(QWidget):
 
     def main_meny_UI(self):
 
-        # Button that shown collection of ingredients.
-        collection_button = QPushButton('Коллекция', self)
-        collection_button.clicked.connect(collection)
-        collection_button.resize(150, 25)
-        collection_button.move(50, 10)
+        exit_act = QAction('&Выход', self) # create action
+        exit_act.setShortcut('Ctrl+Q') # shortcut
+        exit_act.setStatusTip('Выйти из приложения') # Tip on status bar
+        exit_act.triggered.connect(qApp.quit) # connect to quit
 
-        # Button that shown all recipes.
-        recipes_button = QPushButton('Все рецепты', self)
-        recipes_button.clicked.connect(recipes)
-        recipes_button.resize(150, 25)
-        recipes_button.move(50, 40)
+        collection_act = QAction('&Коллекция', self)
+        collection_act.setShortcut('Ctrl+K')
+        collection_act.setStatusTip('Показать мою коллекцию')
+        collection_act.triggered.connect(collection)
 
-        # Button to create recipe.
-        create_button = QPushButton('(Н) Создать рецепт', self)
-        create_button.clicked.connect(creation_recipe)
-        create_button.resize(150, 25)
-        create_button.move(50, 70)
+        all_recipe_act = QAction('&Рецепты', self)
+        all_recipe_act.setShortcut('Ctrl+E')
+        all_recipe_act.setStatusTip('Показать все имеющиеся рецепты')
+        all_recipe_act.triggered.connect(recipes)
 
-        # Button to delete recipe.
-        delete_button = QPushButton('(Н) Удалить рецепт', self)
-        delete_button.clicked.connect(delete_recipe)
-        delete_button.resize(150, 25)
-        delete_button.move(50, 100)
+        create_recipe_act = QAction('&Новый рецепт', self)
+        create_recipe_act.setShortcut('Ctrl+N')
+        create_recipe_act.setStatusTip('Создать новый рецепт')
+        create_recipe_act.triggered.connect(creation_recipe)
 
-        # Button to show aveliable recipes.
-        aveliable_recipe_button = QPushButton('Доступные рецепты', self)
-        aveliable_recipe_button.clicked.connect(aveliable_recipe)
-        aveliable_recipe_button.resize(150, 25)
-        aveliable_recipe_button.move(50, 130)
+        avail_recipe_act = QAction('&Доступные рецепты', self)
+        avail_recipe_act.setShortcut('Ctrl+A')
+        avail_recipe_act.setStatusTip('Показать рецепты на которые хватает \
+ингрдиетнов')
+        avail_recipe_act.triggered.connect(available_recipe)
 
-        # Give rate to recipe.
-        rate_recipe_button = QPushButton('(Н) Оценить рецепт', self)
-        rate_recipe_button.clicked.connect(recipe_rate)
-        rate_recipe_button.resize(150, 25)
-        rate_recipe_button.move(50, 160)
+        ing_from_recipe_act = QAction('&Ингредиенты в рецептах', self)
+        ing_from_recipe_act.setShortcut('Ctrl+I')
+        ing_from_recipe_act.setStatusTip('Показать ингридиенты, \
+присутствующие в рецептах')
+        ing_from_recipe_act.triggered.connect(ing_from_rec)
 
-        # Ingredients from recipes.
-        ing_from_rec_button = QPushButton('Ингредиенты из рецептов', self)
-        ing_from_rec_button.clicked.connect(ing_from_rec)
-        ing_from_rec_button.resize(200, 25)
-        ing_from_rec_button.move(50, 190)
+        delete_recipe_act = QAction('(Н) &Удалить рецепт', self)
+        delete_recipe_act.setShortcut('Ctrl+D')
+        delete_recipe_act.setStatusTip('Удалить рецепт из базы данных')
+        delete_recipe_act.triggered.connect(delete_recipe)
 
-        # Recipe with ingridient.
-        rec_with_ing_button = QPushButton('(Н) Рецепты с ингридиентом', self)
-        rec_with_ing_button.clicked.connect(rec_with_ing)
-        rec_with_ing_button.resize(200, 25)
-        rec_with_ing_button.move(50, 220)
+        rate_recipe_act = QAction('(Н) &Оценить рецепт', self)
+        rate_recipe_act.setShortcut('Ctrl+R')
+        rate_recipe_act.setStatusTip('Поставить оценку рецепту')
+        rate_recipe_act.triggered.connect(recipe_rate)
 
-        # Exit aplication.
-        qbtn = QPushButton('Выход', self)
-        qbtn.clicked.connect(QApplication.instance().quit)
-        qbtn.resize(50, 25)
-        qbtn.move(50, 270)
+        rec_with_ing_act = QAction('(Н) &Ингредиент в рецептах', self)
+        rec_with_ing_act.setShortcut('Ctrl+R')
+        rec_with_ing_act.setStatusTip('Найти все рецепты с выбраным ингридиентом')
+        rec_with_ing_act.triggered.connect(rec_with_ing)
+
+        # Create statusbar.
+        self.statusBar()
+
+        # Create meny bar.
+        menubar = self.menuBar()
+
+        # Recipes meny.
+        recipes_menu = menubar.addMenu('&Рецепты')
+        recipes_menu.addAction(all_recipe_act)
+        recipes_menu.addAction(avail_recipe_act)
+        recipes_menu.addAction(ing_from_recipe_act)
+        recipes_menu.addAction(delete_recipe_act)
+
+        # Collections meny.
+        collect_menu = menubar.addMenu('&Коллекция масел')
+        collect_menu.addAction(collection_act)
+        collect_menu.addAction(rec_with_ing_act)
+
+        exit = menubar.addAction(exit_act)
 
         self.setGeometry(300, 300, 300, 300)
         self.setWindowTitle('Рецепты для аромолампы')
         self.show()
 
+    def closeEvent(self, event):
+        """Event that generated when we close QWidget."""
 
-# Functions of the buttons.
+        reply = QMessageBox.question(self, 'Message',
+            "Are you sure to quit?", QMessageBox.Yes |
+            QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
+# Functions of the meny actions.
 #==============================================================================
 def collection():
     """Otput numbered and sorted igredient collection."""
@@ -129,7 +154,7 @@ def delete_recipe():
     print(f"\nРецепт '{keys[choise - 1]}' удален.\n")
     print(LG.mini_main)
 
-def aveliable_recipe():
+def available_recipe():
     """Otput recipes avaliable to make only."""
 
     coll = data('data/collection.txt')
