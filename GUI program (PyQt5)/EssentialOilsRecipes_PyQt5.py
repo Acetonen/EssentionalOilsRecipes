@@ -1,5 +1,6 @@
 import sys
 import json
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import (QWidget, QPushButton, QApplication, qApp,
                              QMessageBox, QDesktopWidget, QMainWindow,
                              QAction)
@@ -26,7 +27,7 @@ class MainWindow(QMainWindow):
         collection_act = QAction('&Коллекция', self)
         collection_act.setShortcut('Ctrl+K')
         collection_act.setStatusTip('Показать мою коллекцию')
-        collection_act.triggered.connect(collection)
+        collection_act.triggered.connect(self.collection)
 
         all_recipe_act = QAction('&Рецепты', self)
         all_recipe_act.setShortcut('Ctrl+E')
@@ -89,6 +90,17 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Рецепты для аромолампы')
         self.show()
 
+    @pyqtSlot()
+    def collection(self):
+        """Otput numbered and sorted igredient collection."""
+
+        print(LG.collection_meny)
+        coll = sorted(data('data/collection.txt'))
+        print("Моя коллекция:")
+        for count, oil in enumerate(coll,1):
+            print(f"[{count}] {oil}")
+        print()
+
     def closeEvent(self, event):
         """Event that generated when we close QWidget."""
 
@@ -102,15 +114,15 @@ class MainWindow(QMainWindow):
 
 # Functions of the meny actions.
 #==============================================================================
-def collection():
-    """Otput numbered and sorted igredient collection."""
-
-    print(LG.collection_meny)
-    coll = sorted(data('data/collection.txt'))
-    print("Моя коллекция:")
-    for count, oil in enumerate(coll,1):
-        print(f"[{count}] {oil}")
-    print()
+# def collection():
+#     """Otput numbered and sorted igredient collection."""
+#
+#     print(LG.collection_meny)
+#     coll = sorted(data('data/collection.txt'))
+#     print("Моя коллекция:")
+#     for count, oil in enumerate(coll,1):
+#         print(f"[{count}] {oil}")
+#     print()
 
 def recipes():
     """ Print sorted recipes collection"""
