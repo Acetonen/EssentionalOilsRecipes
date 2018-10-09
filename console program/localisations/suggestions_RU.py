@@ -1,11 +1,10 @@
 import datetime
-import pickle
+import shelve
 
 # Creation liistst of elements from base by tegs.
 def suggest(tags):
-    with open('data/base_bin', 'rb') as file:
-        base = pickle.load(file)
-    base_list = [key.lower() for (key, value) in base.items()]
+    with shelve.open('data/base_shelve') as base:
+        base_list = [key.lower() for (key, value) in base.items()]
     suggestion_list = ''
     for item in base_list:
         for tag in tags:

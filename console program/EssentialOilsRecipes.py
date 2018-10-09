@@ -1,5 +1,6 @@
 import sys
-import pickle
+import shelve
+import pprint
 #PEP8
 
 
@@ -54,9 +55,8 @@ class MainMeny:
     def recipes(self):
         """ Print sorted recipes collection"""
 
-        try: rate_dict = data('data/rate_bin')
-        except: rate_dict = {}
-        base = data('data/base_bin')
+        rate_dict = shelve.open('data/rate_shelve')
+        base = shelve.open('data/base_shelve')
         keys = sorted(base)
         for count, oil in enumerate(keys,1):
             # Ensert some spaces after recite nubber.
@@ -66,38 +66,43 @@ class MainMeny:
             print(f"{rate_dict.get(oil, '0')}/10", end=' ')
             beauty_print(oil)
         print('\n', LG.mini_main)
+        rate_dict.close()
+        base.close()
 
     def creation_recipe(self):
         """Creation of new recipe."""
 
-        base = data('data/base_bin')
+        base = shelve.open('data/base_shelve')
         name = input("Название рецепта: ")
         ingredient_list = {}
         while True:
             ingredient = input("Введите ингредиет (ENTER для отмены): ")
             if ingredient == '': break
-            drop = input("количество капель: ")
-            ingredient_list[ingredient] = drop
+            ingredient_list[ingredient] = input("количество капель: ")
         base[name] = ingredient_list
-        save_data("data/base_bin", base)
         print(f"\nРецепт записан в базу.\n")
         print(LG.mini_main)
+        base.close()
 
     def delete_recipe(self):
         """Delete recipe from th base."""
 
-        keys = sorted(data('data/base_bin'))
+        base = shelve.open('data/base_shelve')
+        rate = shelve.open('data/rate_shelve')
+        keys = sorted(base)
         choise = int(input("Введите номер рецепта, который необходимо удалить: "))
-        delete("data/base_bin", keys[choise - 1])
-        delete("data/rate_bin", keys[choise - 1])
+        base.pop(keys[choise - 1], None)
+        rate.pop(keys[choise - 1], None)
         print(f"\nРецепт '{keys[choise - 1]}' удален.\n")
         print(LG.mini_main)
+        base.close()
+        rate.close()
 
     def available_recipe(self):
         """Otput recipes avaliable to make only."""
 
-        coll = data('data/collection_bin')
-        base = data('data/base_bin')
+        coll = shelve.open('data/collection_shelve')
+        base = shelve.open('data/base_shelve')
         # Search ingredient from base in list.
         main_flag = True
         for name in base:
@@ -110,18 +115,21 @@ class MainMeny:
         if main_flag:
             print("\nПохоже, что у Вас ни на что не хватает ингредиентов :'(\n")
         print('\n', LG.mini_main)
+        coll.close()
+        base.close()
 
     def recipe_rate(self):
         """Give rate to recipe."""
 
-        try: rate_dict = data('data/rate_bin')
-        except: rate_dict = {}
-        keys = sorted(data('data/base_bin'))
+        rate_dict = shelve.open('data/rate_shelve')
+        base = shelve.open('data/base_shelve')
+        keys = sorted(base)
         choise = int(input("Ведите номер рецепта: "))
         rate = input("Введите оценку (из 10-ти): ")
         rate_dict[keys[choise - 1]] = rate
-        save_data('data/rate_bin', rate_dict)
         print(LG.mini_main)
+        rate_dict.close()
+        base.close()
 
 
 class CollectionMeny:
@@ -161,10 +169,12 @@ class CollectionMeny:
     def delete_ingredient(self):
         """Delete ingredient from collection."""
 
-        coll = sorted(data('data/collection_bin'))
+        coll = shelve.open('data/collection_shelve')
+        coll_sort = sorted(coll)
         n = int(input("Введите номер удаляемого ингридиента: "))
-        del_ing = coll[n - 1]
-        delete("data/collection_bin", del_ing)
+        del_ing = coll_sort[n - 1]
+        coll.pop(del_ing)
+        coll.close()
         collection()
         print(f"\nИнгридиент '{del_ing}' удален.")
         print(LG.mini_collection)
@@ -172,17 +182,20 @@ class CollectionMeny:
     def add_ingredient(self):
         """Add ingredient to collection."""
 
-        list_of_recipes = data('data/collection_bin')
-        list_of_recipes.append(input("Введите название ингредиента: "))
-        save_data('data/collection_bin', list_of_recipes)
+        coll = shelve.open('data/collection_shelve')
+        ing = input("Введите название ингредиента: ")
+        coll[ing] = ing
+        coll.close()
         print()
         collection()
         print(LG.mini_collection)
 
+
     def ing_from_rec(self):
         """Otput list of all ingredients from recipes."""
 
-        base = data('data/base_bin')
+        base = shelve.open('data/base_shelve')
+        coll = shelve.open('data/collection_shelve')
         list_of_ingredients = []
         # List from all igredients from recipes.
         for i in base:
@@ -202,67 +215,47 @@ class CollectionMeny:
         for position in priority:
             for ingredient in reverse_counter[position]:
                 print(f"""\
-    {ingredient}{(max_length(list_of_ingredients) - len(ingredient) + 1) * ' '}\
-    (в {position} рецептах)\
-    """, end=' ')
-                if ingredient not in data('data/collection_bin'):
+{ingredient}{(max_length(list_of_ingredients) - len(ingredient) + 1) * ' '}\
+(в {position} рецептах)\
+""", end=' ')
+                if ingredient not in coll:
                     print(" - отсутствует в коллекции.")
                 else: print()
         print(LG.mini_collection)
+        base.close()
+        coll.close()
 
     def rec_with_ing(self):
         """Search recipe with the ingredient."""
 
-        base = data('data/base_bin')
-        coll = sorted(data('data/collection_bin'))
+        base = shelve.open('data/base_shelve')
+        coll = shelve.open('data/collection_shelve')
+        coll_sort = sorted(coll)
         n = int(input("Введите номер ингредиента: "))
-        search = coll[n - 1]
-        print(f"\nРецепты, содержащие '{search}':\n")
+        print(f"\nРецепты, содержащие '{coll_sort[n-1]}':\n")
         # Create list of keys from our base with the ingredient.
         list_of_recipes_names = [keyg for (keyg, value) in
-                                base.items() if search in value]
-        sortList = sorted(list_of_recipes_names)
-        for name in sortList:
+                                base.items() if coll_sort[n-1] in value]
+        sort_list = sorted(list_of_recipes_names)
+        for name in sort_list:
             beauty_print(name)
         print(LG.mini_collection)
+        base.close()
+        coll.close()
 
 
 # Support functions.
 #==============================================================================
 
-def data(file_name):
-    """Load base or collection from file."""
-
-    with open(file_name, 'rb') as file:
-        data = pickle.load(file)
-    return data
-
-def save_data(file_name, data):
-    """Dump base or collection in file."""
-
-    with open(file_name, 'wb') as file:
-        pickle.dump(data, file)
-
-def delete(file_name, delete):
-    """Delete ingredient or recipe from base."""
-
-    with open(file_name, "rb+") as file:
-        base = pickle.load(file)
-        # Different ways to list and dictionary.
-        try: base.pop(delete, None)
-        except: base.remove(delete)
-        file.seek(0)
-        file.truncate()
-        pickle.dump(base, file)
-
 def beauty_print(name):
     """Structural output of recipes."""
 
-    base = data('data/base_bin')
+    base = shelve.open('data/base_shelve')
     print(f"{name}{(max_length(base) - len(name) + 1)*' '}", end=': ')
     for key in base[name]:
         print(f"{key} - {base[name][key]}к;", end=' ')
     print()
+    base.close()
 
 def max_length(array):
     """Search element with maximum lenght."""
@@ -300,11 +293,13 @@ def collection():
     """Otput numbered and sorted igredient collection."""
 
     print(LG.collection_meny)
-    coll = sorted(data('data/collection_bin'))
+    coll = shelve.open('data/collection_shelve')
+    coll_sort = sorted(coll)
     print("Моя коллекция:")
-    for count, oil in enumerate(coll,1):
+    for count, oil in enumerate(coll_sort,1):
         print(f"[{count}] {oil}")
     print()
+    coll.close()
 
 
 # Program skeleton
