@@ -1,5 +1,5 @@
 import sys
-import json
+import pickle
 #PEP8
 
 
@@ -54,9 +54,9 @@ class MainMeny:
     def recipes(self):
         """ Print sorted recipes collection"""
 
-        try: rate_dict = data('data/rate.txt')
+        try: rate_dict = data('data/rate_bin')
         except: rate_dict = {}
-        base = data('data/base.txt')
+        base = data('data/base_bin')
         keys = sorted(base)
         for count, oil in enumerate(keys,1):
             # Ensert some spaces after recite nubber.
@@ -70,7 +70,7 @@ class MainMeny:
     def creation_recipe(self):
         """Creation of new recipe."""
 
-        base = data('data/base.txt')
+        base = data('data/base_bin')
         name = input("Название рецепта: ")
         ingredient_list = {}
         while True:
@@ -79,25 +79,25 @@ class MainMeny:
             drop = input("количество капель: ")
             ingredient_list[ingredient] = drop
         base[name] = ingredient_list
-        save_data("data/base.txt", base)
+        save_data("data/base_bin", base)
         print(f"\nРецепт записан в базу.\n")
         print(LG.mini_main)
 
     def delete_recipe(self):
         """Delete recipe from th base."""
 
-        keys = sorted(data('data/base.txt'))
+        keys = sorted(data('data/base_bin'))
         choise = int(input("Введите номер рецепта, который необходимо удалить: "))
-        delete("data/base.txt", keys[choise - 1])
-        delete("data/rate.txt", keys[choise - 1])
+        delete("data/base_bin", keys[choise - 1])
+        delete("data/rate_bin", keys[choise - 1])
         print(f"\nРецепт '{keys[choise - 1]}' удален.\n")
         print(LG.mini_main)
 
     def available_recipe(self):
         """Otput recipes avaliable to make only."""
 
-        coll = data('data/collection.txt')
-        base = data('data/base.txt')
+        coll = data('data/collection_bin')
+        base = data('data/base_bin')
         # Search ingredient from base in list.
         main_flag = True
         for name in base:
@@ -114,13 +114,13 @@ class MainMeny:
     def recipe_rate(self):
         """Give rate to recipe."""
 
-        try: rate_dict = data('data/rate.txt')
+        try: rate_dict = data('data/rate_bin')
         except: rate_dict = {}
-        keys = sorted(data('data/base.txt'))
+        keys = sorted(data('data/base_bin'))
         choise = int(input("Ведите номер рецепта: "))
         rate = input("Введите оценку (из 10-ти): ")
         rate_dict[keys[choise - 1]] = rate
-        save_data('data/rate.txt', rate_dict)
+        save_data('data/rate_bin', rate_dict)
         print(LG.mini_main)
 
 
@@ -161,10 +161,10 @@ class CollectionMeny:
     def delete_ingredient(self):
         """Delete ingredient from collection."""
 
-        coll = sorted(data('data/collection.txt'))
+        coll = sorted(data('data/collection_bin'))
         n = int(input("Введите номер удаляемого ингридиента: "))
         del_ing = coll[n - 1]
-        delete("data/collection.txt", del_ing)
+        delete("data/collection_bin", del_ing)
         collection()
         print(f"\nИнгридиент '{del_ing}' удален.")
         print(LG.mini_collection)
@@ -172,9 +172,9 @@ class CollectionMeny:
     def add_ingredient(self):
         """Add ingredient to collection."""
 
-        list_of_recipes = data('data/collection.txt')
+        list_of_recipes = data('data/collection_bin')
         list_of_recipes.append(input("Введите название ингредиента: "))
-        save_data('data/collection.txt', list_of_recipes)
+        save_data('data/collection_bin', list_of_recipes)
         print()
         collection()
         print(LG.mini_collection)
@@ -182,7 +182,7 @@ class CollectionMeny:
     def ing_from_rec(self):
         """Otput list of all ingredients from recipes."""
 
-        base = data('data/base.txt')
+        base = data('data/base_bin')
         list_of_ingredients = []
         # List from all igredients from recipes.
         for i in base:
@@ -205,7 +205,7 @@ class CollectionMeny:
     {ingredient}{(max_length(list_of_ingredients) - len(ingredient) + 1) * ' '}\
     (в {position} рецептах)\
     """, end=' ')
-                if ingredient not in data('data/collection.txt'):
+                if ingredient not in data('data/collection_bin'):
                     print(" - отсутствует в коллекции.")
                 else: print()
         print(LG.mini_collection)
@@ -213,8 +213,8 @@ class CollectionMeny:
     def rec_with_ing(self):
         """Search recipe with the ingredient."""
 
-        base = data('data/base.txt')
-        coll = sorted(data('data/collection.txt'))
+        base = data('data/base_bin')
+        coll = sorted(data('data/collection_bin'))
         n = int(input("Введите номер ингредиента: "))
         search = coll[n - 1]
         print(f"\nРецепты, содержащие '{search}':\n")
@@ -233,32 +233,32 @@ class CollectionMeny:
 def data(file_name):
     """Load base or collection from file."""
 
-    with open(file_name, 'r', encoding='utf8') as file:
-        data = json.load(file)
+    with open(file_name, 'rb') as file:
+        data = pickle.load(file)
     return data
 
 def save_data(file_name, data):
     """Dump base or collection in file."""
 
-    with open(file_name, 'w', encoding='utf8') as file:
-        json.dump(data, file)
+    with open(file_name, 'wb') as file:
+        pickle.dump(data, file)
 
 def delete(file_name, delete):
     """Delete ingredient or recipe from base."""
 
-    with open(file_name, "r+") as file:
-        base = json.load(file)
+    with open(file_name, "rb+") as file:
+        base = pickle.load(file)
         # Different ways to list and dictionary.
         try: base.pop(delete, None)
         except: base.remove(delete)
         file.seek(0)
         file.truncate()
-        json.dump(base, file)
+        pickle.dump(base, file)
 
 def beauty_print(name):
     """Structural output of recipes."""
 
-    base = data('data/base.txt')
+    base = data('data/base_bin')
     print(f"{name}{(max_length(base) - len(name) + 1)*' '}", end=': ')
     for key in base[name]:
         print(f"{key} - {base[name][key]}к;", end=' ')
@@ -300,7 +300,7 @@ def collection():
     """Otput numbered and sorted igredient collection."""
 
     print(LG.collection_meny)
-    coll = sorted(data('data/collection.txt'))
+    coll = sorted(data('data/collection_bin'))
     print("Моя коллекция:")
     for count, oil in enumerate(coll,1):
         print(f"[{count}] {oil}")
