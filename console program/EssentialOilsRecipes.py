@@ -3,15 +3,39 @@ import shelve
 import pprint
 #PEP8
 
+class Recipe:
+    """Class contain oll information about recipes, oils, raiting."""
+
+    def __init__(self, name, oil, rating):
+        self.name = name
+        self.oils = oil
+        self.rating = rating
+    def __str__(self):
+        oils_print = ''
+        for oil in self.oils:
+            s = f"{self.oils[oil].oil_name} - {str(self.oils[oil].volume)}drop"
+            oils_print = oils_print + s +'; '
+        return ('{0} \n\trating: ({1}/10) \n\tcomposition: {2}'.format(
+                self.name, self.rating, oils_print))
+
+
+class Oil:
+    """Information about essential oils."""
+
+    def __init__(self, name, volume):
+        self.oil_name = name
+        self.volume = volume
+    def __str__(self):
+        return ('{0} - {1} drops'.format(self.oil_name, self.volume))
+
 
 # Main classes
 #==============================================================================
 class MainMeny:
-    """    This is the main meny of it program.
+    """
+    This is the main meny of it program.
     You can go to "Collections" sub-meny, or working here.
     """
-
-
     def __init__(self, choise):
 
         if (choise == 'с' or choise == 'С' or
@@ -55,65 +79,55 @@ class MainMeny:
     def recipes(self):
         """ Print sorted recipes collection"""
 
-        rate_dict = shelve.open('data/rate_shelve')
-        base = shelve.open('data/base_shelve')
+        base = shelve.open('data/resipe_class')
         keys = sorted(base)
-        for count, oil in enumerate(keys,1):
-            # Ensert some spaces after recite nubber.
-            if count<10: spase = " "
-            else: spase = ''
-            print(f"[{count}] {spase}", end=' ')
-            print(f"{rate_dict.get(oil, '0')}/10", end=' ')
-            beauty_print(oil)
+        for count, oil in enumerate(keys, 1):
+            print(f"[{count}] {base[oil]}")
         print('\n', LG.mini_main)
-        rate_dict.close()
         base.close()
 
     def creation_recipe(self):
         """Creation of new recipe."""
 
-        base = shelve.open('data/base_shelve')
-        name = input("Название рецепта: ")
-        ingredient_list = {}
+        base = shelve.open('data/resipe_class')
+        name = input("Recipe name: ")
+        ing_list = {}
         while True:
-            ingredient = input("Введите ингредиет (ENTER для отмены): ")
-            if ingredient == '': break
-            ingredient_list[ingredient] = input("количество капель: ")
-        base[name] = ingredient_list
-        print(f"\nРецепт записан в базу.\n")
+            ing = input("Input oil (ENTER for cancel): ")
+            if ing == '': break
+            ing_list[ing] = Oil(ing ,int(input("number of drops: ")))
+        base[name] = Recipe(name, ing_list, 0)
+        print(f"\nRecipe saved in base.\n")
         print(LG.mini_main)
         base.close()
 
     def delete_recipe(self):
         """Delete recipe from th base."""
 
-        base = shelve.open('data/base_shelve')
-        rate = shelve.open('data/rate_shelve')
+        base = shelve.open('data/resipe_class')
         keys = sorted(base)
-        choise = int(input("Введите номер рецепта, который необходимо удалить: "))
+        choise = int(input("Input nubmber of recipe to delete: "))
         base.pop(keys[choise - 1], None)
-        rate.pop(keys[choise - 1], None)
-        print(f"\nРецепт '{keys[choise - 1]}' удален.\n")
+        print(f"\nRecipe '{keys[choise - 1]}' deleted.\n")
         print(LG.mini_main)
         base.close()
-        rate.close()
 
     def available_recipe(self):
         """Otput recipes avaliable to make only."""
 
-        coll = shelve.open('data/collection_shelve')
-        base = shelve.open('data/base_shelve')
+        coll = shelve.open('data/collection_class')
+        base = shelve.open('data/resipe_class')
         # Search ingredient from base in list.
         main_flag = True
         for name in base:
             flag = True
-            for ing in list(base[name].keys()):
+            for ing in list(base[name].oils):
                 if ing not in coll: flag = False
             if flag:
                 main_flag = False
-                beauty_print(name)
+                print(base[name])
         if main_flag:
-            print("\nПохоже, что у Вас ни на что не хватает ингредиентов :'(\n")
+            print("\nSeems like you havn't enough oils for any recipe :'(\n")
         print('\n', LG.mini_main)
         coll.close()
         base.close()
@@ -121,14 +135,13 @@ class MainMeny:
     def recipe_rate(self):
         """Give rate to recipe."""
 
-        rate_dict = shelve.open('data/rate_shelve')
-        base = shelve.open('data/base_shelve')
+        base = shelve.open('data/resipe_class')
         keys = sorted(base)
-        choise = int(input("Ведите номер рецепта: "))
-        rate = input("Введите оценку (из 10-ти): ")
-        rate_dict[keys[choise - 1]] = rate
+        choise = int(input("Input number of recipe: "))
+        recipe = base[keys[choise - 1]]
+        recipe.rating = int(input("Input rating (from 10): "))
+        base[keys[choise - 1]] = recipe
         print(LG.mini_main)
-        rate_dict.close()
         base.close()
 
 
@@ -164,27 +177,26 @@ class CollectionMeny:
               choise == 'e' or choise == 'E'):
               # Exit program.
               sys.exit()
-        else: print("Такого варианта нет, введите команду правильно\n")
+        else: print("There is no such option, input letter correctly\n")
 
     def delete_ingredient(self):
         """Delete ingredient from collection."""
 
-        coll = shelve.open('data/collection_shelve')
+        coll = shelve.open('data/collection_class')
         coll_sort = sorted(coll)
-        n = int(input("Введите номер удаляемого ингридиента: "))
-        del_ing = coll_sort[n - 1]
-        coll.pop(del_ing)
+        n = int(input("Input number of deleted oil: "))
+        coll.pop(coll_sort[n - 1])
         coll.close()
         collection()
-        print(f"\nИнгридиент '{del_ing}' удален.")
+        print(f"\nOil '{coll_sort[n - 1]}' deleted.")
         print(LG.mini_collection)
 
     def add_ingredient(self):
         """Add ingredient to collection."""
 
-        coll = shelve.open('data/collection_shelve')
-        ing = input("Введите название ингредиента: ")
-        coll[ing] = ing
+        coll = shelve.open('data/collection_class')
+        ing = input("Input oil name: ")
+        coll[ing] = Oil(ing, 0)
         coll.close()
         print()
         collection()
@@ -194,12 +206,12 @@ class CollectionMeny:
     def ing_from_rec(self):
         """Otput list of all ingredients from recipes."""
 
-        base = shelve.open('data/base_shelve')
-        coll = shelve.open('data/collection_shelve')
+        base = shelve.open('data/resipe_class')
+        coll = shelve.open('data/collection_class')
         list_of_ingredients = []
         # List from all igredients from recipes.
         for i in base:
-            list_of_ingredients += list(base[i].keys())
+            list_of_ingredients += list(base[i].oils.keys())
         # Count number of ingredients.
         ingredients_counter = {i: list_of_ingredients.count(i)
                                for i in list_of_ingredients}
@@ -216,10 +228,10 @@ class CollectionMeny:
             for ingredient in reverse_counter[position]:
                 print(f"""\
 {ingredient}{(max_length(list_of_ingredients) - len(ingredient) + 1) * ' '}\
-(в {position} рецептах)\
+(in {position} recipes)\
 """, end=' ')
                 if ingredient not in coll:
-                    print(" - отсутствует в коллекции.")
+                    print(" - not in collection.")
                 else: print()
         print(LG.mini_collection)
         base.close()
@@ -228,17 +240,20 @@ class CollectionMeny:
     def rec_with_ing(self):
         """Search recipe with the ingredient."""
 
-        base = shelve.open('data/base_shelve')
-        coll = shelve.open('data/collection_shelve')
+        base = shelve.open('data/resipe_class')
+        coll = shelve.open('data/collection_class')
         coll_sort = sorted(coll)
-        n = int(input("Введите номер ингредиента: "))
-        print(f"\nРецепты, содержащие '{coll_sort[n-1]}':\n")
-        # Create list of keys from our base with the ingredient.
-        list_of_recipes_names = [keyg for (keyg, value) in
-                                base.items() if coll_sort[n-1] in value]
+        n = int(input("Input ingredient number: "))
+        print(f"\nRecipes contane '{coll_sort[n-1]}':\n")
+        list_of_recipes_names = []
+        for recipe in base:
+            if coll_sort[n-1] in base[recipe].oils:
+                list_of_recipes_names.append(base[recipe].name)
         sort_list = sorted(list_of_recipes_names)
         for name in sort_list:
-            beauty_print(name)
+            print(base[name])
+        if list_of_recipes_names == []:
+            print('There is no ricept with this oil.')
         print(LG.mini_collection)
         base.close()
         coll.close()
@@ -246,16 +261,6 @@ class CollectionMeny:
 
 # Support functions.
 #==============================================================================
-
-def beauty_print(name):
-    """Structural output of recipes."""
-
-    base = shelve.open('data/base_shelve')
-    print(f"{name}{(max_length(base) - len(name) + 1)*' '}", end=': ')
-    for key in base[name]:
-        print(f"{key} - {base[name][key]}к;", end=' ')
-    print()
-    base.close()
 
 def max_length(array):
     """Search element with maximum lenght."""
@@ -283,7 +288,7 @@ def lang():
         choise == 'р' or choise == 'Р'):
         import localisations.RUS as language
         try: import localisations.suggestions_RU
-        except: print("Здравствуте!")
+        except: print("Hello World!!")
     elif (choise == 'e' or choise == 'E' or
           choise == 'а' or choise == 'А'):
         import localisations.EN as language
@@ -293,9 +298,9 @@ def collection():
     """Otput numbered and sorted igredient collection."""
 
     print(LG.collection_meny)
-    coll = shelve.open('data/collection_shelve')
+    coll = shelve.open('data/collection_class')
     coll_sort = sorted(coll)
-    print("Моя коллекция:")
+    print("My collection:")
     for count, oil in enumerate(coll_sort,1):
         print(f"[{count}] {oil}")
     print()
