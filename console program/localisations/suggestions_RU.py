@@ -3,7 +3,7 @@ import shelve
 
 # Creation liistst of elements from base by tegs.
 def suggest(tags):
-    with shelve.open('data/base_shelve') as base:
+    with shelve.open('data/recipe_class') as base:
         base_list = [key.lower() for (key, value) in base.items()]
     suggestion_list = ''
     for item in base_list:

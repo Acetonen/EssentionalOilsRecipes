@@ -1,16 +1,16 @@
 import sys
 import shelve
-import pprint
 #PEP8
 
-class Recipe:
-    """Class contain oll information about recipes, oils, raiting."""
 
+class Recipe:
+    """Class contain all information about recipes, oils, raiting."""
     def __init__(self, name, oil, rating):
         self.name = name
         self.oils = oil
         self.rating = rating
     def __str__(self):
+        """Beauty output of classs objects"""
         oils_print = ''
         for oil in self.oils:
             s = f"{self.oils[oil].oil_name} - {str(self.oils[oil].volume)}drop"
@@ -21,11 +21,11 @@ class Recipe:
 
 class Oil:
     """Information about essential oils."""
-
     def __init__(self, name, volume):
         self.oil_name = name
         self.volume = volume
     def __str__(self):
+        """Pretty print of Oil object"""
         return ('{0} - {1} drops'.format(self.oil_name, self.volume))
 
 
@@ -37,9 +37,8 @@ class MainMeny:
     You can go to "Collections" sub-meny, or working here.
     """
     def __init__(self, choise):
-
-        if (choise == 'с' or choise == 'С' or
-            choise == 'c' or choise == 'C'):
+        if   (choise == 'с' or choise == 'С' or
+              choise == 'c' or choise == 'C'):
             # Creation of new recipe.
             self.creation_recipe()
         elif (choise == 'п' or choise == 'П' or
@@ -69,26 +68,26 @@ class MainMeny:
             collection()
             while True:
                 choise = input()
-                if (choise == 'м' or choise == 'М' or
-                    choise == 'm' or choise == 'M'):
+                if   (choise == 'м' or choise == 'М' or
+                      choise == 'm' or choise == 'M'):
+                    # Return in main meny.
                     print(LG.main_meny)
                     break
-                    # Return in main meny.
                 CollectionMeny(choise)
+
 
     def recipes(self):
         """ Print sorted recipes collection"""
-
         base = shelve.open('data/resipe_class')
         keys = sorted(base)
-        for count, oil in enumerate(keys, 1):
-            print(f"[{count}] {base[oil]}")
+        print(base['Test'])
+        for count, recipe in enumerate(keys, 1):
+            print(f"[{count}] {base[recipe]}")
         print('\n', LG.mini_main)
         base.close()
 
     def creation_recipe(self):
         """Creation of new recipe."""
-
         base = shelve.open('data/resipe_class')
         name = input("Recipe name: ")
         ing_list = {}
@@ -103,7 +102,6 @@ class MainMeny:
 
     def delete_recipe(self):
         """Delete recipe from th base."""
-
         base = shelve.open('data/resipe_class')
         keys = sorted(base)
         choise = int(input("Input nubmber of recipe to delete: "))
@@ -114,7 +112,6 @@ class MainMeny:
 
     def available_recipe(self):
         """Otput recipes avaliable to make only."""
-
         coll = shelve.open('data/collection_class')
         base = shelve.open('data/resipe_class')
         # Search ingredient from base in list.
@@ -134,7 +131,6 @@ class MainMeny:
 
     def recipe_rate(self):
         """Give rate to recipe."""
-
         base = shelve.open('data/resipe_class')
         keys = sorted(base)
         choise = int(input("Input number of recipe: "))
@@ -150,11 +146,9 @@ class CollectionMeny:
     This is the Collection meny of program.
     Here you can working with your collection.
     """
-
     def __init__(self, choise):
-
-        if (choise == 'к' or choise == 'К' or
-            choise == 'o' or choise == 'O'):
+        if   (choise == 'к' or choise == 'К' or
+              choise == 'o' or choise == 'O'):
               # Print mini collection meny.
             collection()
         elif (choise == 'у' or choise == 'У' or
@@ -176,12 +170,12 @@ class CollectionMeny:
         elif (choise == 'з' or choise == 'З' or
               choise == 'e' or choise == 'E'):
               # Exit program.
-              sys.exit()
-        else: print("There is no such option, input letter correctly\n")
+            sys.exit()
+        else:
+            print("There is no such option, input letter correctly\n")
 
     def delete_ingredient(self):
         """Delete ingredient from collection."""
-
         coll = shelve.open('data/collection_class')
         coll_sort = sorted(coll)
         n = int(input("Input number of deleted oil: "))
@@ -193,7 +187,6 @@ class CollectionMeny:
 
     def add_ingredient(self):
         """Add ingredient to collection."""
-
         coll = shelve.open('data/collection_class')
         ing = input("Input oil name: ")
         coll[ing] = Oil(ing, 0)
@@ -205,7 +198,6 @@ class CollectionMeny:
 
     def ing_from_rec(self):
         """Otput list of all ingredients from recipes."""
-
         base = shelve.open('data/resipe_class')
         coll = shelve.open('data/collection_class')
         list_of_ingredients = []
@@ -239,7 +231,6 @@ class CollectionMeny:
 
     def rec_with_ing(self):
         """Search recipe with the ingredient."""
-
         base = shelve.open('data/resipe_class')
         coll = shelve.open('data/collection_class')
         coll_sort = sorted(coll)
@@ -264,7 +255,6 @@ class CollectionMeny:
 
 def max_length(array):
     """Search element with maximum lenght."""
-
     max_length = 0
     try: # if list
         for i in array:
@@ -277,18 +267,19 @@ def max_length(array):
 
 def lang():
     """Choose program language."""
-
     print("""
     Choose the choise / Выберете язык
     [E]/[А] - English
     [R]/[Р] - Russian
     """)
     choise = input("")
-    if (choise == 'r' or choise == 'R' or
-        choise == 'р' or choise == 'Р'):
+    if   (choise == 'r' or choise == 'R' or
+          choise == 'р' or choise == 'Р'):
         import localisations.RUS as language
-        try: import localisations.suggestions_RU
-        except: print("Hello World!!")
+        try:
+            import localisations.suggestions_RU
+        except:
+            print("Hello World!")
     elif (choise == 'e' or choise == 'E' or
           choise == 'а' or choise == 'А'):
         import localisations.EN as language
@@ -296,7 +287,6 @@ def lang():
 
 def collection():
     """Otput numbered and sorted igredient collection."""
-
     print(LG.collection_meny)
     coll = shelve.open('data/collection_class')
     coll_sort = sorted(coll)
@@ -310,8 +300,8 @@ def collection():
 # Program skeleton
 #==============================================================================
 if __name__ == '__main__':
-    LG = lang() # localisation language
-    print(LG.main_meny) # output main meny of program
+    LG = lang()   # Localisation language
+    print(LG.main_meny)  # Output main meny of program
     while True:
         choise = input()
         MainMeny(choise)
