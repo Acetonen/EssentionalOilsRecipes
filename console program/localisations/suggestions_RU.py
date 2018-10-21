@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
+
 import datetime
 import shelve
 
 # Creation liistst of elements from base by tegs.
 def suggest(tags):
-    with shelve.open('data/recipe_class') as base:
+    with shelve.open('data/resipe_class') as base:
         base_list = [key.lower() for (key, value) in base.items()]
     suggestion_list = ''
     for item in base_list:

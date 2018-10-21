@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 import shelve
 #PEP8
@@ -279,7 +281,7 @@ def lang():
         try:
             import localisations.suggestions_RU
         except:
-            print("Hello World!")
+            raise
     elif (choise == 'e' or choise == 'E' or
           choise == 'а' or choise == 'А'):
         import localisations.EN as language
