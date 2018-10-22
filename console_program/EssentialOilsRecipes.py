@@ -82,7 +82,6 @@ class MainMeny:
         """ Print sorted recipes collection"""
         base = shelve.open(resipe_path)
         keys = sorted(base)
-        print(base['Test'])
         for count, recipe in enumerate(keys, 1):
             print(f"[{count}] {base[recipe]}")
         print('\n', LG.mini_main)

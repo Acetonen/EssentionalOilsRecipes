@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=/home/acetonen/Code/EssentialOilsRecipes/console_program/EssentialOilsRecipes.py
+Icon=aroma.png
+Name=Oil recipes
+Terminal=true
+Type=Application
