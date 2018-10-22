@@ -273,18 +273,23 @@ def lang():
     [E]/[А] - English
     [R]/[Р] - Russian
     """)
-    choise = input("")
-    if   (choise == 'r' or choise == 'R' or
-          choise == 'р' or choise == 'Р'):
-        import localisations.RUS as language
-        try:
-            from localisations.suggestions_RU import Suggestion
-            Suggestion(resipe_path)
-        except:
-            raise
-    elif (choise == 'e' or choise == 'E' or
-          choise == 'а' or choise == 'А'):
-        import localisations.EN as language
+    while True:
+        choise = input("")
+        if   (choise == 'r' or choise == 'R' or
+              choise == 'р' or choise == 'Р'):
+            import localisations.RUS as language
+            try:
+                from localisations.suggestions_RU import Suggestion
+                Suggestion(resipe_path)
+                break
+            except:
+                raise
+        elif (choise == 'e' or choise == 'E' or
+              choise == 'а' or choise == 'А'):
+            import localisations.EN as language
+            break
+        else:
+            print("There is no such option, input letter correctly\n")
     return language
 
 def collection():
@@ -302,12 +307,15 @@ def data_path(relative_path):
     """Make absolyte path of database file."""
     script_name = sys.argv[0]
     script_path = os.path.dirname(script_name)
-    absolute_path = os.path.abspath(script_path) + relative_path
-    return absolute_path
+    absolute_path = os.path.abspath(script_path)
+    path_list = absolute_path.split(os.sep)
+    path_list.extend(relative_path)
+    os_path = os.path.join(os.sep, *path_list)
+    return os_path
 
 global resipe_path, collection_path
-resipe_path = data_path('/data/resipe_class')
-collection_path = data_path('/data/collection_class')
+resipe_path = data_path(['data', 'resipe_class'])
+collection_path = data_path(['data', 'collection_class'])
 
 # Program skeleton
 #==============================================================================
