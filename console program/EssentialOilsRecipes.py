@@ -2,8 +2,9 @@
 
 import sys
 import shelve
+import os
+import sys
 #PEP8
-
 
 class Recipe:
     """Class contain all information about recipes, oils, raiting."""
@@ -66,7 +67,6 @@ class MainMeny:
         elif (choise == 'к' or choise == 'К' or
               choise == 'o' or choise == 'O'):
               # Open collection meny.
-            print(LG.collection_meny)
             collection()
             while True:
                 choise = input()
@@ -80,7 +80,7 @@ class MainMeny:
 
     def recipes(self):
         """ Print sorted recipes collection"""
-        base = shelve.open('data/resipe_class')
+        base = shelve.open(resipe_path)
         keys = sorted(base)
         print(base['Test'])
         for count, recipe in enumerate(keys, 1):
@@ -90,7 +90,7 @@ class MainMeny:
 
     def creation_recipe(self):
         """Creation of new recipe."""
-        base = shelve.open('data/resipe_class')
+        base = shelve.open(resipe_path)
         name = input("Recipe name: ")
         ing_list = {}
         while True:
@@ -104,7 +104,7 @@ class MainMeny:
 
     def delete_recipe(self):
         """Delete recipe from th base."""
-        base = shelve.open('data/resipe_class')
+        base = shelve.open(resipe_path)
         keys = sorted(base)
         choise = int(input("Input nubmber of recipe to delete: "))
         base.pop(keys[choise - 1], None)
@@ -114,8 +114,8 @@ class MainMeny:
 
     def available_recipe(self):
         """Otput recipes avaliable to make only."""
-        coll = shelve.open('data/collection_class')
-        base = shelve.open('data/resipe_class')
+        coll = shelve.open(collection_path)
+        base = shelve.open(resipe_path)
         # Search ingredient from base in list.
         main_flag = True
         for name in base:
@@ -133,7 +133,7 @@ class MainMeny:
 
     def recipe_rate(self):
         """Give rate to recipe."""
-        base = shelve.open('data/resipe_class')
+        base = shelve.open(resipe_path)
         keys = sorted(base)
         choise = int(input("Input number of recipe: "))
         recipe = base[keys[choise - 1]]
@@ -178,7 +178,7 @@ class CollectionMeny:
 
     def delete_ingredient(self):
         """Delete ingredient from collection."""
-        coll = shelve.open('data/collection_class')
+        coll = shelve.open(collection_path)
         coll_sort = sorted(coll)
         n = int(input("Input number of deleted oil: "))
         coll.pop(coll_sort[n - 1])
@@ -189,7 +189,7 @@ class CollectionMeny:
 
     def add_ingredient(self):
         """Add ingredient to collection."""
-        coll = shelve.open('data/collection_class')
+        coll = shelve.open(collection_path)
         ing = input("Input oil name: ")
         coll[ing] = Oil(ing, 0)
         coll.close()
@@ -200,8 +200,8 @@ class CollectionMeny:
 
     def ing_from_rec(self):
         """Otput list of all ingredients from recipes."""
-        base = shelve.open('data/resipe_class')
-        coll = shelve.open('data/collection_class')
+        base = shelve.open(resipe_path)
+        coll = shelve.open(collection_path)
         list_of_ingredients = []
         # List from all igredients from recipes.
         for i in base:
@@ -233,8 +233,8 @@ class CollectionMeny:
 
     def rec_with_ing(self):
         """Search recipe with the ingredient."""
-        base = shelve.open('data/resipe_class')
-        coll = shelve.open('data/collection_class')
+        base = shelve.open(resipe_path)
+        coll = shelve.open(collection_path)
         coll_sort = sorted(coll)
         n = int(input("Input ingredient number: "))
         print(f"\nRecipes contane '{coll_sort[n-1]}':\n")
@@ -279,7 +279,8 @@ def lang():
           choise == 'р' or choise == 'Р'):
         import localisations.RUS as language
         try:
-            import localisations.suggestions_RU
+            from localisations.suggestions_RU import Suggestion
+            Suggestion(resipe_path)
         except:
             raise
     elif (choise == 'e' or choise == 'E' or
@@ -290,7 +291,7 @@ def lang():
 def collection():
     """Otput numbered and sorted igredient collection."""
     print(LG.collection_meny)
-    coll = shelve.open('data/collection_class')
+    coll = shelve.open(collection_path)
     coll_sort = sorted(coll)
     print("My collection:")
     for count, oil in enumerate(coll_sort,1):
@@ -298,10 +299,21 @@ def collection():
     print()
     coll.close()
 
+def data_path(relative_path):
+    """Make absolyte path of database file."""
+    script_name = sys.argv[0]
+    script_path = os.path.dirname(script_name)
+    absolute_path = os.path.abspath(script_path) + relative_path
+    return absolute_path
+
+global resipe_path, collection_path
+resipe_path = data_path('/data/resipe_class')
+collection_path = data_path('/data/collection_class')
 
 # Program skeleton
 #==============================================================================
 if __name__ == '__main__':
+    # print(resipe_path)
     LG = lang()   # Localisation language
     print(LG.main_meny)  # Output main meny of program
     while True:

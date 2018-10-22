@@ -3,31 +3,37 @@
 import datetime
 import shelve
 
-# Creation liistst of elements from base by tegs.
-def suggest(tags):
-    with shelve.open('data/resipe_class') as base:
-        base_list = [key.lower() for (key, value) in base.items()]
-    suggestion_list = ''
-    for item in base_list:
-        for tag in tags:
-            if tag in item:
-                suggestion_list += item + "; "
-    return suggestion_list
+class Suggestion:
+    """Create suggestion list from Recipe collection by season"""
+    def __init__(self, path):
+        # Creation liistst of elements from base by tegs.
+        def suggest(tags):
+            with shelve.open(path) as base:
+                base_list = [key.lower() for (key, value) in base.items()]
+            suggestion_list = ''
+            for item in base_list:
+                for tag in tags:
+                    if tag in item:
+                        suggestion_list += item + "; "
+            return suggestion_list
 
-# Find current month.
-current_month = datetime.datetime.now().month
-all_months = (' ', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+        # Find current month.
+        current_month = datetime.datetime.now().month
+        all_months = (
+            ' ', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
             'июль', 'август', 'сентябрь', 'октябрь', 'ноябрября', 'декабрь')
 
-# Outumn.
-if 9 <= current_month <= 11:
-    month_list = ['осень', 'осенний', 'осеннее', 'осенние', 'осенняя', 'сентябрь',
-               'октябрь', 'ноябрь', 'сентября', 'октября', 'ноября',
-               'сентябрьский', 'октябрьский', 'ноябрьский', 'свитер', 'листопад']
-    suggestion_list = suggest(month_list)
-    if suggestion_list == '':
-        suggestion_list = "добавить в ваши рецепты что-то осенее;)"
-    print(f"""
+        # Outumn.
+        if 9 <= current_month <= 11:
+            month_list = [
+                'осень', 'осенний', 'осеннее', 'осенние', 'осенняя', 'сентябрь',
+                'октябрь', 'ноябрь', 'сентября', 'октября', 'ноября',
+                'сентябрьский', 'октябрьский', 'ноябрьский', 'свитер',
+                'листопад']
+            suggestion_list = suggest(month_list)
+            if suggestion_list == '':
+                suggestion_list = "добавить в ваши рецепты что-то осенее;)"
+            print(f"""
 _________________¶
 ________________¶¶
 ___________¶___¶¶¶___¶
@@ -52,17 +58,18 @@ _______________¶¶     Рекомендуем:
 ________________¶¶¶     {suggestion_list}
     """)
 
- # Winter.
-elif current_month == 12 or current_month == 1 or current_month == 2:
-    month_list = ['зима', 'зимний', 'зимнее', 'зимние',
-                'зимняя', 'январь', 'декабрь', 'февраль', 'декабря', 'января',
-                'февраля', 'декабрьский', 'январский', 'февральский', 'свитер',
-                'снег', 'снегопад', 'иней', 'зимушка', 'Зимушка',
-                'новый год', 'новым годом', 'рождество', 'рождественский']
-    suggestion_list = suggest(month_list)
-    if suggestion_list == '':
-        suggestion_list = "добавить в ваши рецепты что-то зимнее;)"
-    print(f"""
+         # Winter.
+        elif current_month == 12 or current_month == 1 or current_month == 2:
+            month_list = [
+                'зима', 'зимний', 'зимнее', 'зимние', 'зимняя', 'январь',
+                'декабрь', 'февраль', 'декабря', 'января', 'февраля',
+                'декабрьский', 'январский', 'февральский', 'свитер', 'снег',
+                'снегопад', 'иней', 'зимушка', 'Зимушка', 'новый год',
+                'новым годом', 'рождество', 'рождественский']
+            suggestion_list = suggest(month_list)
+            if suggestion_list == '':
+                suggestion_list = "добавить в ваши рецепты что-то зимнее;)"
+            print(f"""
 _____________________$$
 _____________________$$
 _____________$$$$____$$____$$$$
@@ -90,15 +97,16 @@ ___________
 {suggestion_list}
     """)
 
-# Spring.
-elif 3 <= current_month <= 5:
-   month_list = ['весна', 'весенний', 'весеннее', 'весенние',
-               'весенняя', 'март', 'апрель', 'май', 'марта', 'апреля',
-               'мая', 'мартовский', 'апрельский', 'майский', 'свежий']
-   suggestion_list = suggest(month_list)
-   if suggestion_list == '':
-       suggestion_list = "добавить в ваши рецепты что-то весеннее;)"
-   print(f"""
+        # Spring.
+        elif 3 <= current_month <= 5:
+           month_list = [
+               'весна', 'весенний', 'весеннее', 'весенние', 'весенняя', 'март',
+               'апрель', 'май', 'марта', 'апреля', 'мая', 'мартовский',
+               'апрельский', 'майский', 'свежий']
+           suggestion_list = suggest(month_list)
+           if suggestion_list == '':
+               suggestion_list = "добавить в ваши рецепты что-то весеннее;)"
+           print(f"""
 ______d$$$$b_d$$$$$b
 _____$$$$$$$$$$$$$$$$$
 ____$$$$$$P_$$$$$$$$$
@@ -123,16 +131,17 @@ __________$$
 ___________$
    """)
 
-# Summer.
-elif 6 <= current_month <= 8:
-  month_list = ['лето', 'летний', 'летнее', 'летние',
-              'летняя', 'июнь', 'июль', 'август', 'июля', 'июня',
-              'августа', 'июньский', 'июльский', 'августовский', 'тропический',
-              'тропики', 'экзотика', 'экзотический', 'отпуск']
-  suggestion_list = suggest(month_list)
-  if suggestion_list == '':
-      suggestion_list = "добавить в ваши рецепты что-то летнее;)"
-  print(f"""
+        # Summer.
+        elif 6 <= current_month <= 8:
+          month_list = [
+              'лето', 'летний', 'летнее', 'летние', 'летняя', 'июнь', 'июль',
+              'август', 'июля', 'июня', 'августа', 'июньский', 'июльский',
+              'августовский', 'тропический', 'тропики', 'экзотика',
+              'экзотический', 'отпуск']
+          suggestion_list = suggest(month_list)
+          if suggestion_list == '':
+              suggestion_list = "добавить в ваши рецепты что-то летнее;)"
+          print(f"""
 ________________ ¶¶¶¶¶¶¶¶
 _______________ ¶¶¶¶
 ___¶¶¶¶¶¶¶¶¶__ ¶¶¶____¶¶¶
