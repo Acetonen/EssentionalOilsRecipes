@@ -40,38 +40,30 @@ class MainMeny:
     You can go to "Collections" sub-meny, or working here.
     """
     def __init__(self, choise):
-        if   (choise == 'с' or choise == 'С' or
-              choise == 'c' or choise == 'C'):
+        if choise in ['c', 'C', 'с', 'С']:
             # Creation of new recipe.
             self.creation_recipe()
-        elif (choise == 'п' or choise == 'П' or
-              choise == 's' or choise == 'S'):
+        elif choise in ['s', 'S', 'п', 'П']:
               # Output all recipes.
             self.recipes()
-        elif (choise == 'у' or choise == 'У' or
-              choise == 'r' or choise == 'R'):
+        elif choise in ['r', 'R', 'у', 'У']:
               # Delete recipe.
             self.delete_recipe()
-        elif (choise == 'в' or choise == 'В' or
-              choise == 'i' or choise == 'I'):
+        elif choise in ['i', 'I', 'в', 'В']:
               # Otput recipes avaliable to make only.
             self.available_recipe()
-        elif (choise == 'р' or choise == 'Р' or
-              choise == 'g' or choise == 'G'):
+        elif choise in ['g', 'G', 'р', 'Р']:
               # Give rate to recipe.
             self.recipe_rate()
-        elif (choise == 'з' or choise == 'З' or
-              choise == 'e' or choise == 'E'):
+        elif choise in ['e', 'E', 'з', 'З']:
               # Exit program.
               sys.exit()
-        elif (choise == 'к' or choise == 'К' or
-              choise == 'o' or choise == 'O'):
+        elif choise in ['o', 'O', 'к', 'К']:
               # Open collection meny.
             collection()
             while True:
                 choise = input()
-                if   (choise == 'м' or choise == 'М' or
-                      choise == 'm' or choise == 'M'):
+                if   choise in ['m', 'M', 'м', 'М']:
                     # Return in main meny.
                     print(LG.main_meny)
                     break
@@ -148,28 +140,22 @@ class CollectionMeny:
     Here you can working with your collection.
     """
     def __init__(self, choise):
-        if   (choise == 'к' or choise == 'К' or
-              choise == 'o' or choise == 'O'):
+        if choise in ['o', 'O', 'к', 'К']:
               # Print mini collection meny.
             collection()
-        elif (choise == 'у' or choise == 'У' or
-              choise == 'r' or choise == 'R'):
+        elif choise in ['r', 'R', 'у', 'У']:
               # Delete ingredient from collection.
             self.delete_ingredient()
-        elif (choise == 'д' or choise == 'Д' or
-              choise == 'a' or choise == 'A'):
+        elif choise in ['a', 'A', 'д', 'Д']:
               # Add ingredient to collection.
             self.add_ingredient()
-        elif (choise == 'н' or choise == 'Н' or
-              choise == 'f' or choise == 'F'):
+        elif choise in ['f', 'F', 'н', 'Н']:
               # Search recipe with the ingredient.
             self.rec_with_ing()
-        elif (choise == 'о' or choise == 'О' or
-              choise == 's' or choise == 'S'):
+        elif choise in ['s', 'S', 'о', 'О']:
               # Otput list of all ingredients from recipes.
             self.ing_from_rec()
-        elif (choise == 'з' or choise == 'З' or
-              choise == 'e' or choise == 'E'):
+        elif choise in ['e', 'E', 'з', 'З']:
               # Exit program.
             sys.exit()
         else:
@@ -275,8 +261,7 @@ def lang():
     """)
     while True:
         choise = input("")
-        if   (choise == 'r' or choise == 'R' or
-              choise == 'р' or choise == 'Р'):
+        if choise in ['r', 'R', 'р', 'Р']:
             import localisations.RUS as language
             try:
                 from localisations.suggestions_RU import Suggestion
@@ -284,8 +269,7 @@ def lang():
                 break
             except:
                 raise
-        elif (choise == 'e' or choise == 'E' or
-              choise == 'а' or choise == 'А'):
+        elif choise in ['e', 'E', 'а', 'А']:
             import localisations.EN as language
             break
         else:
