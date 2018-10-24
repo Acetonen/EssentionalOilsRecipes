@@ -44,22 +44,23 @@ class MainMeny:
             # Creation of new recipe.
             self.create_recipe()
         elif choise in ['s', 'S', 'п', 'П']:
-              # Output all recipes.
+            # Output all recipes.
             self.show_all_recipes()
         elif choise in ['r', 'R', 'у', 'У']:
-              # Delete recipe.
+            # Delete recipe.
             self.delete_recipe()
         elif choise in ['i', 'I', 'в', 'В']:
-              # Otput recipes avaliable to make only.
+            # Otput recipes avaliable to make only.
             self.show_available_recipe()
         elif choise in ['g', 'G', 'р', 'Р']:
-              # Give rate to recipe.
+            # Give rate to recipe.
             self.give_rating()
         elif choise in ['e', 'E', 'з', 'З']:
-              # Exit program.
-              sys.exit()
+            # Exit program.
+            sys.exit()
         elif choise in ['o', 'O', 'к', 'К']:
-              # Open collection meny.
+            # Open collection meny.
+            print('\n', LG.collection_meny)
             show_oils_collection()
             while True:
                 choise = input()
@@ -68,6 +69,9 @@ class MainMeny:
                     print(LG.main_meny)
                     break
                 CollectionMeny(choise)
+        else:
+            print("There is no such option, input letter correctly\n")
+        print('\n', LG.mini_main)
 
 
     def show_all_recipes(self):
@@ -76,32 +80,36 @@ class MainMeny:
         keys = sorted(base)
         for count, recipe in enumerate(keys, 1):
             print(f"[{count}] {base[recipe]}")
-        print('\n', LG.mini_main)
         base.close()
 
     def create_recipe(self):
         """Create new recipe."""
         base = shelve.open(resipe_path)
         name = input("Recipe name: ")
-        ingredient_list = {}
-        while True:
-            ingredient = input("Input oil (ENTER for cancel): ")
-            if ingredient == '': break
-            ingredient_list[ingredient] = Oil(ingredient,
-                                              int(input("number of drops: ")))
-        base[name] = Recipe(name, ingredient_list, 0)
-        print(f"\nRecipe saved in base.\n")
-        print(LG.mini_main)
+        if name:
+            ingredient_list = {}
+            while True:
+                ingredient = input("Input oil (ENTER for cancel): ")
+                if ingredient == '': break
+                ingredient_list[ingredient] = Oil(ingredient,
+                                                  int(input("number of drops: ")))
+            base[name] = Recipe(name, ingredient_list, 0)
+            print(f"\nRecipe saved in base.\n")
+        else:
+            print("\nYou skip recipe creation.\n")
         base.close()
 
     def delete_recipe(self):
         """Delete recipe from base."""
         base = shelve.open(resipe_path)
         keys = sorted(base)
-        choise = int(input("Input nubmber of recipe to delete: "))
-        base.pop(keys[choise - 1], None)
-        print(f"\nRecipe '{keys[choise - 1]}' deleted.\n")
-        print(LG.mini_main)
+        choise = input("Input nubmber of recipe to delete: ")
+        try:
+            choise = int(choise)
+            base.pop(keys[choise - 1], None)
+            print(f"\nRecipe '{keys[choise - 1]}' deleted.\n")
+        except:
+            print("\nYou must input NUMBER of recipe in list.\n")
         base.close()
 
     def show_available_recipe(self):
@@ -119,7 +127,6 @@ class MainMeny:
                 print(base[name])
         if main_flag:
             print("\nSeems like you havn't enough oils for any recipe :'(\n")
-        print('\n', LG.mini_main)
         collection.close()
         base.close()
 
@@ -127,11 +134,14 @@ class MainMeny:
         """Give rating to recipe."""
         base = shelve.open(resipe_path)
         keys = sorted(base)
-        choise = int(input("Input number of recipe: "))
-        recipe = base[keys[choise - 1]]
-        recipe.rating = int(input("Input rating (from 10): "))
-        base[keys[choise - 1]] = recipe
-        print(LG.mini_main)
+        choise = input("Input nubmber of recipe: ")
+        try:
+            choise = int(choise)
+            recipe = base[keys[choise - 1]]
+            recipe.rating = int(input("Input rating (from 10): "))
+            base[keys[choise - 1]] = recipe
+        except:
+            print("\nYou must input NUMBER of recipe in list.\n")
         base.close()
 
 
@@ -142,47 +152,53 @@ class CollectionMeny:
     """
     def __init__(self, choise):
         if choise in ['o', 'O', 'к', 'К']:
-              # Print mini collection meny.
+            # Print mini collection meny.
             show_oils_collection()
         elif choise in ['r', 'R', 'у', 'У']:
-              # Delete ingredient from collection.
+            # Delete ingredient from collection.
             self.delete_ingredient()
         elif choise in ['a', 'A', 'д', 'Д']:
-              # Add ingredient to collection.
+            # Add ingredient to collection.
             self.add_ingredient()
         elif choise in ['f', 'F', 'н', 'Н']:
-              # Search recipe with the ingredient.
+            # Search recipe with the ingredient.
             self.show_recipe_with_choosen_ingredient()
         elif choise in ['s', 'S', 'о', 'О']:
-              # Otput list of all ingredients from recipes.
+            # Otput list of all ingredients from recipes.
             self.show_missing_ingredients()
         elif choise in ['e', 'E', 'з', 'З']:
-              # Exit program.
+            # Exit program.
             sys.exit()
         else:
             print("There is no such option, input letter correctly\n")
+        print(LG.mini_collection)
+
 
     def delete_ingredient(self):
         """Delete ingredient from collection."""
         collection = shelve.open(collection_path)
         collection_sort = sorted(collection)
-        n = int(input("Input number of deleted oil: "))
-        collection.pop(collection_sort[n - 1])
-        collection.close()
+        choise = input("Input number of deleted oil: ")
+        try:
+            choise = int(choise)
+            collection.pop(collection_sort[choise - 1])
+            collection.close()
+            print(f"\nOil '{collection_sort[choise - 1]}' deleted.")
+        except:
+            print("\nYou must input NUMBER of oil in list.\n")
         show_oils_collection()
-        print(f"\nOil '{collection_sort[n - 1]}' deleted.")
-        print(LG.mini_collection)
 
     def add_ingredient(self):
         """Add ingredient to collection."""
         collection = shelve.open(collection_path)
-        ing = input("Input oil name: ")
-        collection[ing] = Oil(ing, 0)
+        ingredient = input("Input oil name: ")
+        if ingredient:
+            collection[ingredient] = Oil(ingredient, 0)
+        else:
+            print("\nYou skip oil adding.\n")
         collection.close()
         print()
         show_oils_collection()
-        print(LG.mini_collection)
-
 
     def show_missing_ingredients(self):
         """Otput list of all ingredients from recipes and show missing."""
@@ -213,7 +229,6 @@ class CollectionMeny:
                 if ingredient in collection:
                     print(" - in collection.")
                 else: print()
-        print(LG.mini_collection)
         base.close()
         collection.close()
 
@@ -233,7 +248,6 @@ class CollectionMeny:
             print(base[name])
         if list_of_recipes_names == []:
             print('There is no ricept with this oil.')
-        print(LG.mini_collection)
         base.close()
         collection.close()
 
@@ -279,7 +293,6 @@ def choose_language():
 
 def show_oils_collection():
     """Otput numbered and sorted igredient collection."""
-    print(LG.collection_meny)
     collection = shelve.open(collection_path)
     collection_sort = sorted(collection)
     print("My collection:")
