@@ -7,7 +7,7 @@ import sys
 #PEP8
 
 class Recipe:
-    """Class contain all information about recipes, oils, raiting."""
+    """Class contain name of recipe, containing oils, recipe raiting."""
     def __init__(self, name, oil, rating):
         self.name = name
         self.oils = oil
@@ -42,25 +42,25 @@ class MainMeny:
     def __init__(self, choise):
         if choise in ['c', 'C', 'с', 'С']:
             # Creation of new recipe.
-            self.creation_recipe()
+            self.create_recipe()
         elif choise in ['s', 'S', 'п', 'П']:
               # Output all recipes.
-            self.recipes()
+            self.show_all_recipes()
         elif choise in ['r', 'R', 'у', 'У']:
               # Delete recipe.
             self.delete_recipe()
         elif choise in ['i', 'I', 'в', 'В']:
               # Otput recipes avaliable to make only.
-            self.available_recipe()
+            self.show_available_recipe()
         elif choise in ['g', 'G', 'р', 'Р']:
               # Give rate to recipe.
-            self.recipe_rate()
+            self.give_rating()
         elif choise in ['e', 'E', 'з', 'З']:
               # Exit program.
               sys.exit()
         elif choise in ['o', 'O', 'к', 'К']:
               # Open collection meny.
-            collection()
+            show_oils_collection()
             while True:
                 choise = input()
                 if   choise in ['m', 'M', 'м', 'М']:
@@ -70,7 +70,7 @@ class MainMeny:
                 CollectionMeny(choise)
 
 
-    def recipes(self):
+    def show_all_recipes(self):
         """ Print sorted recipes collection"""
         base = shelve.open(resipe_path)
         keys = sorted(base)
@@ -79,22 +79,23 @@ class MainMeny:
         print('\n', LG.mini_main)
         base.close()
 
-    def creation_recipe(self):
-        """Creation of new recipe."""
+    def create_recipe(self):
+        """Create new recipe."""
         base = shelve.open(resipe_path)
         name = input("Recipe name: ")
-        ing_list = {}
+        ingredient_list = {}
         while True:
-            ing = input("Input oil (ENTER for cancel): ")
-            if ing == '': break
-            ing_list[ing] = Oil(ing ,int(input("number of drops: ")))
-        base[name] = Recipe(name, ing_list, 0)
+            ingredient = input("Input oil (ENTER for cancel): ")
+            if ingredient == '': break
+            ingredient_list[ingredient] = Oil(ingredient,
+                                              int(input("number of drops: ")))
+        base[name] = Recipe(name, ingredient_list, 0)
         print(f"\nRecipe saved in base.\n")
         print(LG.mini_main)
         base.close()
 
     def delete_recipe(self):
-        """Delete recipe from th base."""
+        """Delete recipe from base."""
         base = shelve.open(resipe_path)
         keys = sorted(base)
         choise = int(input("Input nubmber of recipe to delete: "))
@@ -103,27 +104,27 @@ class MainMeny:
         print(LG.mini_main)
         base.close()
 
-    def available_recipe(self):
+    def show_available_recipe(self):
         """Otput recipes avaliable to make only."""
-        coll = shelve.open(collection_path)
+        collection = shelve.open(collection_path)
         base = shelve.open(resipe_path)
         # Search ingredient from base in list.
         main_flag = True
         for name in base:
             flag = True
-            for ing in list(base[name].oils):
-                if ing not in coll: flag = False
+            for ingredient in list(base[name].oils):
+                if ingredient not in collection: flag = False
             if flag:
                 main_flag = False
                 print(base[name])
         if main_flag:
             print("\nSeems like you havn't enough oils for any recipe :'(\n")
         print('\n', LG.mini_main)
-        coll.close()
+        collection.close()
         base.close()
 
-    def recipe_rate(self):
-        """Give rate to recipe."""
+    def give_rating(self):
+        """Give rating to recipe."""
         base = shelve.open(resipe_path)
         keys = sorted(base)
         choise = int(input("Input number of recipe: "))
@@ -142,7 +143,7 @@ class CollectionMeny:
     def __init__(self, choise):
         if choise in ['o', 'O', 'к', 'К']:
               # Print mini collection meny.
-            collection()
+            show_oils_collection()
         elif choise in ['r', 'R', 'у', 'У']:
               # Delete ingredient from collection.
             self.delete_ingredient()
@@ -151,10 +152,10 @@ class CollectionMeny:
             self.add_ingredient()
         elif choise in ['f', 'F', 'н', 'Н']:
               # Search recipe with the ingredient.
-            self.rec_with_ing()
+            self.show_recipe_with_choosen_ingredient()
         elif choise in ['s', 'S', 'о', 'О']:
               # Otput list of all ingredients from recipes.
-            self.ing_from_rec()
+            self.show_missing_ingredients()
         elif choise in ['e', 'E', 'з', 'З']:
               # Exit program.
             sys.exit()
@@ -163,30 +164,30 @@ class CollectionMeny:
 
     def delete_ingredient(self):
         """Delete ingredient from collection."""
-        coll = shelve.open(collection_path)
-        coll_sort = sorted(coll)
+        collection = shelve.open(collection_path)
+        collection_sort = sorted(collection)
         n = int(input("Input number of deleted oil: "))
-        coll.pop(coll_sort[n - 1])
-        coll.close()
-        collection()
-        print(f"\nOil '{coll_sort[n - 1]}' deleted.")
+        collection.pop(collection_sort[n - 1])
+        collection.close()
+        show_oils_collection()
+        print(f"\nOil '{collection_sort[n - 1]}' deleted.")
         print(LG.mini_collection)
 
     def add_ingredient(self):
         """Add ingredient to collection."""
-        coll = shelve.open(collection_path)
+        collection = shelve.open(collection_path)
         ing = input("Input oil name: ")
-        coll[ing] = Oil(ing, 0)
-        coll.close()
+        collection[ing] = Oil(ing, 0)
+        collection.close()
         print()
-        collection()
+        show_oils_collection()
         print(LG.mini_collection)
 
 
-    def ing_from_rec(self):
-        """Otput list of all ingredients from recipes."""
+    def show_missing_ingredients(self):
+        """Otput list of all ingredients from recipes and show missing."""
         base = shelve.open(resipe_path)
-        coll = shelve.open(collection_path)
+        collection = shelve.open(collection_path)
         list_of_ingredients = []
         # List from all igredients from recipes.
         for i in base:
@@ -194,7 +195,7 @@ class CollectionMeny:
         # Count number of ingredients.
         ingredients_counter = {i: list_of_ingredients.count(i)
                                for i in list_of_ingredients}
-        # Grouped elements for sequenses.
+        # Revert keys and values.
         reverse_counter = {}
         for k, v in ingredients_counter.items():
             reverse_counter[v] = reverse_counter.get(v, [])
@@ -206,26 +207,26 @@ class CollectionMeny:
         for position in priority:
             for ingredient in reverse_counter[position]:
                 print(f"""\
-{ingredient}{(max_length(list_of_ingredients) - len(ingredient) + 1) * ' '}\
+{ingredient}{(find_max_length(list_of_ingredients) - len(ingredient) + 1) * ' '}\
 (in {position} recipes)\
 """, end=' ')
-                if ingredient not in coll:
-                    print(" - not in collection.")
+                if ingredient in collection:
+                    print(" - in collection.")
                 else: print()
         print(LG.mini_collection)
         base.close()
-        coll.close()
+        collection.close()
 
-    def rec_with_ing(self):
+    def show_recipe_with_choosen_ingredient(self):
         """Search recipe with the ingredient."""
         base = shelve.open(resipe_path)
-        coll = shelve.open(collection_path)
-        coll_sort = sorted(coll)
+        collection = shelve.open(collection_path)
+        collection_sort = sorted(collection)
         n = int(input("Input ingredient number: "))
-        print(f"\nRecipes contane '{coll_sort[n-1]}':\n")
+        print(f"\nRecipes contane '{collection_sort[n-1]}':\n")
         list_of_recipes_names = []
         for recipe in base:
-            if coll_sort[n-1] in base[recipe].oils:
+            if collection_sort[n-1] in base[recipe].oils:
                 list_of_recipes_names.append(base[recipe].name)
         sort_list = sorted(list_of_recipes_names)
         for name in sort_list:
@@ -234,13 +235,13 @@ class CollectionMeny:
             print('There is no ricept with this oil.')
         print(LG.mini_collection)
         base.close()
-        coll.close()
+        collection.close()
 
 
 # Support functions.
 #==============================================================================
 
-def max_length(array):
+def find_max_length(array):
     """Search element with maximum lenght."""
     max_length = 0
     try: # if list
@@ -252,7 +253,7 @@ def max_length(array):
             if len(i) > max_length: max_length = len(i)
     return max_length
 
-def lang():
+def choose_language():
     """Choose program language."""
     print("""
     Choose the choise / Выберете язык
@@ -276,37 +277,34 @@ def lang():
             print("There is no such option, input letter correctly\n")
     return language
 
-def collection():
+def show_oils_collection():
     """Otput numbered and sorted igredient collection."""
     print(LG.collection_meny)
-    coll = shelve.open(collection_path)
-    coll_sort = sorted(coll)
+    collection = shelve.open(collection_path)
+    collection_sort = sorted(collection)
     print("My collection:")
-    for count, oil in enumerate(coll_sort,1):
+    for count, oil in enumerate(collection_sort,1):
         print(f"[{count}] {oil}")
     print()
-    coll.close()
+    collection.close()
 
-def data_path(relative_path):
+def make_absolyte_path(relative_path):
     """Make absolyte path of database file."""
     script_name = sys.argv[0]
     script_path = os.path.dirname(script_name)
     absolute_path = os.path.abspath(script_path)
-    path_list = absolute_path.split(os.sep)
-    path_list.extend(relative_path)
-    os_path = os.path.join(os.sep, *path_list)
+    os_path = os.path.join(absolute_path, *relative_path)
     return os_path
 
 global resipe_path, collection_path
-resipe_path = data_path(['data', 'resipe_class'])
-collection_path = data_path(['data', 'collection_class'])
+resipe_path = make_absolyte_path(['data', 'resipe_class'])
+collection_path = make_absolyte_path(['data', 'collection_class'])
 
 # Program skeleton
 #==============================================================================
 if __name__ == '__main__':
-    # print(resipe_path)
-    LG = lang()   # Localisation language
-    print(LG.main_meny)  # Output main meny of program
+    LG = choose_language()   # Localisation language
+    sys.stdout.write(LG.main_meny)  # Output main meny of program
     while True:
-        choise = input()
+        choise = sys.stdin.readline()[:-1]
         MainMeny(choise)
