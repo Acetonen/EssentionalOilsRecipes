@@ -38,18 +38,15 @@ class Oil:
 
 def show_all_recipes():
     """ Print sorted recipes collection"""
-    base = shelve.open(RECIPE_PATH)
-    sorted_base = sorted(base)
+    sorted_base = sorted(BASE)
     for count, recipe in enumerate(sorted_base, 1):
-        print("[{}] {}".format(count, base[recipe]))
-    base.close()
+        print("[{}] {}".format(count, BASE[recipe]))
 
 
 def create_recipe():
     """Create new recipe."""
     recipe_name = input("Recipe name: ")
     if recipe_name:
-        base = shelve.open(RECIPE_PATH)
         oils_list = {}
         while True:
             oil = input("Input oil (ENTER for cancel): ")
@@ -62,40 +59,35 @@ def create_recipe():
                 print("You must input NUMBER.")
                 break
             oils_list[oil] = Oil(oil, drops)
-        base[recipe_name] = Recipe(recipe_name, oils_list, 0)
-        print("\nRecipe saved in base.\n")
-        base.close()
+        BASE[recipe_name] = Recipe(recipe_name, oils_list, 0)
+        print("\nRecipe saved in BASE.\n")
     else:
         print("\nYou skip recipe creation.\n")
 
 
 def delete_recipe():
-    """Delete recipe from base."""
+    """Delete recipe from BASE."""
     recipe_number = input("Input nubmber of recipe to delete: ")
-    base = shelve.open(RECIPE_PATH)
-    if check_is_it_number_in_range(recipe_number, len(base)):
+    if check_is_it_number_in_range(recipe_number, len(BASE)):
         recipe_number = int(recipe_number)
-        keys = sorted(base)
-        base.pop(keys[recipe_number - 1], None)
+        keys = sorted(BASE)
+        BASE.pop(keys[recipe_number - 1], None)
         print("\nRecipe '{}' deleted.\n".format(keys[recipe_number - 1]))
-    base.close()
 
 
 def show_available_recipe():
     """Otput recipes avaliable to make only."""
-    collection = sorting_from_file(COLLECTION_PATH)
-    base = shelve.open(RECIPE_PATH)
-    # Search ingredient from base in list.
+    collection = sorted(COLLECTION)
+    # Search ingredient from BASE in list.
     not_enough_oils = True
-    for recipe in base:
+    for recipe in BASE:
         avaliable_recipe = True
-        for oil in list(base[recipe].oils):
+        for oil in list(BASE[recipe].oils):
             if oil not in collection:
                 avaliable_recipe = False
         if avaliable_recipe:
             not_enough_oils = False
-            print(base[recipe])
-    base.close()
+            print(BASE[recipe])
     if not_enough_oils:
         print("\nSeems like you havn't enough oils for any recipe :'(\n")
 
@@ -104,28 +96,25 @@ def give_rating():
     """Give rating to recipe."""
     recipe_number = input("Input nubmber of recipe: ")
     rating = input("Input rating (in range 0-10): ")
-    base = shelve.open(RECIPE_PATH)
-    if (check_is_it_number_in_range(recipe_number, len(base)) and
+    if (check_is_it_number_in_range(recipe_number, len(BASE)) and
             check_is_it_number_in_range(rating, 10)):
         recipe_number = int(recipe_number)
         rating = int(rating)
-        sorted_base = sorted(base)
-        recipe = base[sorted_base[recipe_number - 1]]
+        sorted_base = sorted(BASE)
+        recipe = BASE[sorted_base[recipe_number - 1]]
         recipe.rating = rating
-        base[sorted_base[recipe_number - 1]] = recipe
-    base.close()
+        BASE[sorted_base[recipe_number - 1]] = recipe
 
 
 def delete_ingredient():
     """Delete ingredient from collection."""
     oil_number = input("Input number of deleted oil: ")
-    collection = shelve.open(COLLECTION_PATH)
-    if check_is_it_number_in_range(oil_number, len(collection)):
+    if check_is_it_number_in_range(oil_number, len(COLLECTION)):
         oil_number = int(oil_number)
-        collection_sort = sorted(collection)
-        collection.pop(collection_sort[oil_number - 1])
+        collection_sort = sorted(COLLECTION)
+        COLLECTION.pop(collection_sort[oil_number - 1])
         print("\nOil '{}' deleted.".format({collection_sort[oil_number - 1]}))
-    collection.close()
+    COLLECTION.sync()
     show_oils_collection()
 
 
@@ -133,9 +122,8 @@ def add_ingredient():
     """Add ingredient to collection."""
     ingredient = input("Input oil name: ")
     if ingredient:
-        collection = shelve.open(COLLECTION_PATH)
-        collection[ingredient] = Oil(ingredient, 0)
-        collection.close()
+        COLLECTION[ingredient] = Oil(ingredient, 0)
+        COLLECTION.sync()
     else:
         print("\nYou skip oil adding.\n")
     print("\nOil saved in collection.\n")
@@ -154,7 +142,7 @@ def show_missing_ingredients():
             spaces = (longest_oil_name - len(ingredient)+1) * ' '
             print("{}{}(in {} recipes)".format(
                 ingredient, spaces, position), end=' ')
-            collection = sorting_from_file(COLLECTION_PATH)
+            collection = sorted(COLLECTION)
             if ingredient in collection:
                 print(" - in collection.")
             else:
@@ -166,11 +154,9 @@ def create_dict_oils_popularity():
     Create dictionary where keys are number in recipes, values are
     ingredients.
     """
-    base = shelve.open(RECIPE_PATH)
     list_of_all_recipes_oils = []
-    for recipe in base:
-        list_of_all_recipes_oils += list(base[recipe].oils.keys())
-    base.close()
+    for recipe in BASE:
+        list_of_all_recipes_oils += list(BASE[recipe].oils.keys())
     # Count number of ingredients.
     oils_popularity = {oil: list_of_all_recipes_oils.count(oil)
                        for oil in list_of_all_recipes_oils}
@@ -185,19 +171,17 @@ def create_dict_oils_popularity():
 def show_recipe_with_choosen_oil():
     """Search recipe with the ingredient."""
     oil_number = input("Input ingredient number: ")
-    collection = sorting_from_file(COLLECTION_PATH)
+    collection = sorted(COLLECTION)
     if check_is_it_number_in_range(oil_number, len(collection)):
         oil_number = int(oil_number)
-        base = shelve.open(RECIPE_PATH)
         print(f"\nRecipes contane '{collection[oil_number-1]}':\n")
         list_of_recipes_names = []
-        for recipe in base:
-            if collection[oil_number-1] in base[recipe].oils:
-                list_of_recipes_names.append(base[recipe].name)
+        for recipe in BASE:
+            if collection[oil_number-1] in BASE[recipe].oils:
+                list_of_recipes_names.append(BASE[recipe].name)
         sort_list = sorted(list_of_recipes_names)
         for recipe in sort_list:
-            print(base[recipe])
-        base.close()
+            print(BASE[recipe])
         if list_of_recipes_names == []:
             print('There is no ricept with this oil.')
 
@@ -246,22 +230,14 @@ def choose_language():
 
 def show_oils_collection():
     """Otput numbered and sorted igredient collection."""
-    collection = sorting_from_file(COLLECTION_PATH)
+    collection = sorted(COLLECTION)
     print("My collection:")
     for count, oil in enumerate(collection, 1):
         print(f"[{count}] {oil}")
 
 
-def sorting_from_file(path):
-    """Sorting data from file"""
-    data = shelve.open(path)
-    data_sort = sorted(data)
-    data.close()
-    return data_sort
-
-
 def make_absolyte_path(relative_path):
-    """Make absolyte path of database file."""
+    """Make absolyte path of dataBASE file."""
     script_name = sys.argv[0]
     script_path = os.path.dirname(script_name)
     absolute_path = os.path.abspath(script_path)
@@ -282,6 +258,8 @@ if __name__ == '__main__':
 
     # Navigation for Main meny.
     while True:
+        BASE = shelve.open(RECIPE_PATH)
+        COLLECTION = shelve.open(COLLECTION_PATH)
         USER_CHOISE = input()
         if USER_CHOISE in ['s', 'S', 'п', 'П']:
             # Output all recipes.
@@ -339,3 +317,5 @@ if __name__ == '__main__':
         else:
             print("There is no such option, input letter correctly\n")
         print('\n', LG.mini_main)
+        BASE.close()
+        COLLECTION.close()
