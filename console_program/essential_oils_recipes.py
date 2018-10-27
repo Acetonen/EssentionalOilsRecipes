@@ -36,120 +36,6 @@ class Oil:
         return '{0} - {1} drops'.format(self.oil_name, self.volume)
 
 
-def input_to_main_meny(choise):
-    """
-    This is the main meny of it program.
-    You can go to "Collections" sub-meny, or working here.
-    """
-    if choise in ['s', 'S', 'п', 'П']:
-        # Output all recipes.
-        show_all_recipes()
-    elif choise in ['i', 'I', 'в', 'В']:
-        # Otput recipes avaliable to make only.
-        show_available_recipe()
-    elif choise in ['c', 'C', 'с', 'С']:
-        # Creation of new recipe.
-        create_recipe()
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
-    elif choise in ['a', 'A', 'а', 'А']:
-        # Show season suggestions.
-        print(SUGGESTION)
-    elif choise in ['r', 'R', 'у', 'У']:
-        # Delete recipe.
-        delete_recipe()
-    elif choise in ['g', 'G', 'р', 'Р']:
-        # Give rate to recipe.
-        give_rating()
-<<<<<<< HEAD
-=======
-=======
-    elif choise in ['r', 'R', 'у', 'У']:
-        # Delete recipe.
-        try:
-            delete_recipe()
-        except:
-            print("\nYou must input NUMBER of recipe in list.\n")
-            raise
-    elif choise in ['g', 'G', 'р', 'Р']:
-        # Give rate to recipe.
-        try:
-            give_rating()
-        except:
-            print("\nYou must input NUMBER.\n")
-            raise
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
-    elif choise in ['e', 'E', 'з', 'З']:
-        # Exit program.
-        sys.exit()
-    elif choise in ['o', 'O', 'к', 'К']:
-        # Open collection meny.
-        print('\n', LG.collection_meny)
-        show_oils_collection()
-        while True:
-            choise = input()
-            input_to_collection_meny(choise)
-            if choise in ['m', 'M', 'м', 'М']:
-                # Return in main meny.
-                print(LG.main_meny)
-                break
-    else:
-        print("There is no such option, input letter correctly\n")
-    print('\n', LG.mini_main)
-
-
-def input_to_collection_meny(choise):
-    """
-    This is the Collection meny of program.
-    Here you can working with your collection.
-    """
-    if choise in ['o', 'O', 'к', 'К']:
-        # Print mini collection meny.
-        show_oils_collection()
-    elif choise in ['s', 'S', 'о', 'О']:
-        # Otput list of all ingredients from recipes.
-        show_missing_ingredients()
-    elif choise in ['a', 'A', 'д', 'Д']:
-        # Add ingredient to collection.
-        add_ingredient()
-    elif choise in ['r', 'R', 'у', 'У']:
-        # Delete ingredient from collection.
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
-        delete_ingredient()
-    elif choise in ['f', 'F', 'н', 'Н']:
-        # Search recipe with the ingredient.
-        show_recipe_with_choosen_oil()
-<<<<<<< HEAD
-=======
-=======
-        try:
-            delete_ingredient()
-        except:
-            print("\nYou must input NUMBER of oil in list.\n")
-            raise
-    elif choise in ['f', 'F', 'н', 'Н']:
-        # Search recipe with the ingredient.
-        try:
-            show_recipe_with_choosen_oil()
-        except:
-            print("\nYou must input NUMBER of oil in list.\n")
-            raise
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
-    elif choise in ['e', 'E', 'з', 'З']:
-        # Exit program.
-        sys.exit()
-    else:
-        print("There is no such option, input letter correctly\n")
-    print(LG.mini_collection)
-
-
 def show_all_recipes():
     """ Print sorted recipes collection"""
     base = shelve.open(RECIPE_PATH)
@@ -185,10 +71,6 @@ def create_recipe():
 
 def delete_recipe():
     """Delete recipe from base."""
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
     recipe_number = input("Input nubmber of recipe to delete: ")
     base = shelve.open(RECIPE_PATH)
     if check_is_it_number_in_range(recipe_number, len(base)):
@@ -197,18 +79,6 @@ def delete_recipe():
         base.pop(keys[recipe_number - 1], None)
         print("\nRecipe '{}' deleted.\n".format(keys[recipe_number - 1]))
     base.close()
-<<<<<<< HEAD
-=======
-=======
-    choise = input("Input nubmber of recipe to delete: ")
-    choise = int(choise)
-    base = shelve.open(RECIPE_PATH)
-    keys = sorted(base)
-    base.pop(keys[choise - 1], None)
-    base.close()
-    print("\nRecipe '{}' deleted.\n".format(keys[choise - 1]))
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
 
 
 def show_available_recipe():
@@ -232,10 +102,6 @@ def show_available_recipe():
 
 def give_rating():
     """Give rating to recipe."""
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
     recipe_number = input("Input nubmber of recipe: ")
     rating = input("Input rating (in range 0-10): ")
     base = shelve.open(RECIPE_PATH)
@@ -247,32 +113,11 @@ def give_rating():
         recipe = base[sorted_base[recipe_number - 1]]
         recipe.rating = rating
         base[sorted_base[recipe_number - 1]] = recipe
-<<<<<<< HEAD
-=======
-=======
-    choise = input("Input nubmber of recipe: ")
-    rating = input("Input rating (0 - 10): ")
-    choise = int(choise)
-    rating = int(rating)
-    base = shelve.open(RECIPE_PATH)
-    sorted_base = sorted(base)
-    recipe = base[sorted_base[choise - 1]]
-    if rating in range(11):
-        recipe.rating = rating
-    else:
-        print("Rating must be in range 0-10!")
-    base[sorted_base[choise - 1]] = recipe
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
     base.close()
 
 
 def delete_ingredient():
     """Delete ingredient from collection."""
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
     oil_number = input("Input number of deleted oil: ")
     collection = shelve.open(COLLECTION_PATH)
     if check_is_it_number_in_range(oil_number, len(collection)):
@@ -281,18 +126,6 @@ def delete_ingredient():
         collection.pop(collection_sort[oil_number - 1])
         print("\nOil '{}' deleted.".format({collection_sort[oil_number - 1]}))
     collection.close()
-<<<<<<< HEAD
-=======
-=======
-    choise = input("Input number of deleted oil: ")
-    choise = int(choise)
-    collection = shelve.open(COLLECTION_PATH)
-    collection_sort = sorted(collection)
-    collection.pop(collection_sort[choise - 1])
-    collection.close()
-    print("\nOil '{}' deleted.".format({collection_sort[choise - 1]}))
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
     show_oils_collection()
 
 
@@ -351,10 +184,6 @@ def create_dict_oils_popularity():
 
 def show_recipe_with_choosen_oil():
     """Search recipe with the ingredient."""
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
     oil_number = input("Input ingredient number: ")
     collection = sorting_from_file(COLLECTION_PATH)
     if check_is_it_number_in_range(oil_number, len(collection)):
@@ -384,26 +213,6 @@ def check_is_it_number_in_range(number, list_range):
     else:
         print("\nYou must input NUMBER.\n")
     return check_number
-<<<<<<< HEAD
-=======
-=======
-    choise = input("Input ingredient number: ")
-    choise = int(choise)
-    base = shelve.open(RECIPE_PATH)
-    collection = sorting_from_file(COLLECTION_PATH)
-    print(f"\nRecipes contane '{collection[choise-1]}':\n")
-    list_of_recipes_names = []
-    for recipe in base:
-        if collection[choise-1] in base[recipe].oils:
-            list_of_recipes_names.append(base[recipe].name)
-    base.close()
-    sort_list = sorted(list_of_recipes_names)
-    for name in sort_list:
-        print(base[name])
-    if list_of_recipes_names == []:
-        print('There is no ricept with this oil.')
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
 
 
 def find_max_length(array):
@@ -426,14 +235,6 @@ def choose_language():
         choise = input("")
         if choise in ['r', 'R', 'р', 'Р']:
             import localisations.RUS as language
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-            from localisations.suggestions_RU import Suggestion
-            Suggestion(RECIPE_PATH)
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
             break
         elif choise in ['e', 'E', 'а', 'А']:
             import localisations.EN as language
@@ -470,29 +271,71 @@ def make_absolyte_path(relative_path):
 
 # Program skeleton
 # =============================================================================
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-global RECIPE_PATH, COLLECTION_PATH
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
 RECIPE_PATH = make_absolyte_path(['data', 'resipe_class'])
 COLLECTION_PATH = make_absolyte_path(['data', 'collection_class'])
 
 if __name__ == '__main__':
     LG = choose_language()   # Localisation language
-<<<<<<< HEAD
     SUGGESTION = suggest.give_season_suggestion()
     print(SUGGESTION)
-=======
-<<<<<<< HEAD
-    SUGGESTION = suggest.give_season_suggestion()
-    print(SUGGESTION)
-=======
->>>>>>> e578f267cc14d8f4bc2b03d53a0ab52849461abc
->>>>>>> c3e41cb50bd3dd92f217a225a77da3b10e6307b8
     sys.stdout.write(LG.main_meny)  # Output main meny of program
+
+    # Navigation for Main meny.
     while True:
         USER_CHOISE = input()
-        input_to_main_meny(USER_CHOISE)
+        if USER_CHOISE in ['s', 'S', 'п', 'П']:
+            # Output all recipes.
+            show_all_recipes()
+        elif USER_CHOISE in ['i', 'I', 'в', 'В']:
+            # Otput recipes avaliable to make only.
+            show_available_recipe()
+        elif USER_CHOISE in ['c', 'C', 'с', 'С']:
+            # Creation of new recipe.
+            create_recipe()
+        elif USER_CHOISE in ['a', 'A', 'а', 'А']:
+            # Show season suggestions.
+            print(SUGGESTION)
+        elif USER_CHOISE in ['r', 'R', 'у', 'У']:
+            # Delete recipe.
+            delete_recipe()
+        elif USER_CHOISE in ['g', 'G', 'р', 'Р']:
+            # Give rate to recipe.
+            give_rating()
+        elif USER_CHOISE in ['e', 'E', 'з', 'З']:
+            # Exit program.
+            sys.exit()
+        elif USER_CHOISE in ['o', 'O', 'к', 'К']:
+            # Open collection meny.
+            print('\n', LG.collection_meny)
+            show_oils_collection()
+            # Navigation for Collection meny.
+            while True:
+                USER_CHOISE = input()
+                if USER_CHOISE in ['m', 'M', 'м', 'М']:
+                    # Return in main meny.
+                    print(LG.main_meny)
+                    break
+                elif USER_CHOISE in ['o', 'O', 'к', 'К']:
+                    # Print mini collection meny.
+                    show_oils_collection()
+                elif USER_CHOISE in ['s', 'S', 'о', 'О']:
+                    # Otput list of all ingredients from recipes.
+                    show_missing_ingredients()
+                elif USER_CHOISE in ['a', 'A', 'д', 'Д']:
+                    # Add ingredient to collection.
+                    add_ingredient()
+                elif USER_CHOISE in ['r', 'R', 'у', 'У']:
+                    # Delete ingredient from collection.
+                    delete_ingredient()
+                elif USER_CHOISE in ['f', 'F', 'н', 'Н']:
+                    # Search recipe with the ingredient.
+                    show_recipe_with_choosen_oil()
+                elif USER_CHOISE in ['e', 'E', 'з', 'З']:
+                    # Exit program.
+                    sys.exit()
+                else:
+                    print("There is no such option, input letter correctly\n")
+                print(LG.mini_collection)
+        else:
+            print("There is no such option, input letter correctly\n")
+        print('\n', LG.mini_main)
