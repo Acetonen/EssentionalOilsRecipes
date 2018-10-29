@@ -3,23 +3,13 @@
 
 import datetime
 import shelve
-import os
-import sys
 
-
-def make_absolyte_path(relative_path):
-    """Make absolyte path of database file."""
-    script_name = sys.argv[0]
-    script_path = os.path.dirname(script_name)
-    absolute_path = os.path.abspath(script_path)
-    os_path = os.path.join(absolute_path, *relative_path)
-    return os_path
+from absolyte_path_module import RECIPE_PATH
 
 
 def give_item_by_tag(tags):
     """Creation liistst of elements from base by tegs."""
-    path = make_absolyte_path(['data', 'resipe_class'])
-    with shelve.open(path) as base:
+    with shelve.open(RECIPE_PATH) as base:
         base_list = [key.lower() for (key, value) in base.items()]
     give_item_by_tag_recipe_list = ''
     for item in base_list:
