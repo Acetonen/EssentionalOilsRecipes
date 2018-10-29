@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+"""English localisation."""
 
-main_meny = """
+MAIN_MENY = """
                     MAIN MENY
 ****************************************************
     [C] Create new recipe
@@ -9,17 +10,18 @@ main_meny = """
     [R] Remove recipe
     [O] Show my oils collection
     [G] Give a rate to recipe
+    [A] Show season suggestion
     [E] Exit program
 ****************************************************
                                         EOR ver.1.13
     """
-mini_main = """\
+MINI_MAIN = """\
 ****************************************************
 [C]-new recipe [S]-all recipes [I]-rec. with my oils
 [R]-rm. recipe [O]-oils collec.[G]-give a rate
-[E]-exit program
+[A]-show season suggestion     [E]-exit program
 """
-collection_meny = """
+COLLECTION_MENY = """
                     COLLECTION MENY
 ----------------------------------------------------
     [A] Add oil into collection
@@ -31,7 +33,7 @@ collection_meny = """
     [E] Exit program
 ----------------------------------------------------
 """
-mini_collection = """
+MINI_COLLECTION = """
 ----------------------------------------------------
 [A]-add oil    [R]-rm. oil [F]-find all recipes
 [S]-out oils   [М]-меню    [O]-oils collection

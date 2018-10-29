@@ -3,9 +3,9 @@
 
 import sys
 
-import localisations.suggestions_ru as suggest
 import recipe_module
 import collection_module
+from localisations import suggestions_ru
 from recipe_class import Recipe
 from oil_class import Oil
 
@@ -20,10 +20,10 @@ def choose_language():
     while True:
         choise = input("")
         if choise in ['r', 'R', 'р', 'Р']:
-            import localisations.RUS as language
+            import localisations.rus as language
             break
         elif choise in ['e', 'E', 'а', 'А']:
-            import localisations.EN as language
+            import localisations.en as language
             break
         else:
             print("There is no such option, input letter correctl.\n")
@@ -31,10 +31,12 @@ def choose_language():
 
 
 if __name__ == '__main__':
+
+    AVAILABLE_CLASSES = (Oil, Recipe)
     PROGRAM_LANGUAGE = choose_language()
-    SEASON_SUGGESTION = suggest.give_season_suggestion()
+    SEASON_SUGGESTION = suggestions_ru.give_season_suggestion()
     print(SEASON_SUGGESTION)
-    print(PROGRAM_LANGUAGE.main_meny)
+    print(PROGRAM_LANGUAGE.MAIN_MENY)
 
     # Navigation for Main meny.
     while True:
@@ -45,23 +47,23 @@ if __name__ == '__main__':
             recipe_module.show_available_recipe()
         elif USER_CHOISE in ['c', 'C', 'с', 'С']:
             recipe_module.create_recipe()
-        elif USER_CHOISE in ['a', 'A', 'а', 'А']:
-            print(SEASON_SUGGESTION)
         elif USER_CHOISE in ['r', 'R', 'у', 'У']:
             recipe_module.delete_recipe()
         elif USER_CHOISE in ['g', 'G', 'р', 'Р']:
             recipe_module.give_rating_to_recipe()
+        elif USER_CHOISE in ['a', 'A', 'а', 'А']:
+            print(SEASON_SUGGESTION)
         elif USER_CHOISE in ['e', 'E', 'з', 'З']:
             sys.exit()
         elif USER_CHOISE in ['o', 'O', 'к', 'К']:
-            print('\n', PROGRAM_LANGUAGE.collection_meny)
+            print('\n', PROGRAM_LANGUAGE.COLLECTION_MENY)
             collection_module.show_oils_collection()
             # Navigation for Collection meny.
             while True:
                 USER_CHOISE = input()
                 if USER_CHOISE in ['m', 'M', 'м', 'М']:
                     # Return in main meny.
-                    print(PROGRAM_LANGUAGE.main_meny)
+                    print(PROGRAM_LANGUAGE.MAIN_MENY)
                     break
                 elif USER_CHOISE in ['o', 'O', 'к', 'К']:
                     collection_module.show_oils_collection()
@@ -77,7 +79,7 @@ if __name__ == '__main__':
                     sys.exit()
                 else:
                     print("There is no such option, input letter correctly\n")
-                print(PROGRAM_LANGUAGE.mini_collection)
+                print(PROGRAM_LANGUAGE.MINI_COLLECTION)
         else:
             print("There is no such option, input letter correctly\n")
-        print('\n', PROGRAM_LANGUAGE.mini_main)
+        print('\n', PROGRAM_LANGUAGE.MINI_MAIN)
