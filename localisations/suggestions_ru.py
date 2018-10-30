@@ -4,7 +4,7 @@
 import datetime
 import shelve
 
-from absolyte_path_module import RECIPE_PATH
+from modules.absolyte_path_module import RECIPE_PATH
 
 
 def give_item_by_tag(tags):

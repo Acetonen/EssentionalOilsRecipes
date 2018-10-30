@@ -3,11 +3,11 @@
 
 import sys
 
-import recipe_module
-import collection_module
+import modules.recipe_module
+import modules.collection_module
+from modules.recipe_class import Recipe
+from modules.oil_class import Oil
 from localisations import suggestions_ru
-from recipe_class import Recipe
-from oil_class import Oil
 
 
 def choose_language():
@@ -18,7 +18,7 @@ def choose_language():
     [R]/[Р] - Russian
     """)
     while True:
-        choise = input("")
+        choise = input("").lower()
         if choise in ['r', 'R', 'р', 'Р']:
             import localisations.rus as language
             break
@@ -40,42 +40,42 @@ if __name__ == '__main__':
 
     # Navigation for Main meny.
     while True:
-        USER_CHOISE = input()
-        if USER_CHOISE in ['s', 'S', 'п', 'П']:
-            recipe_module.show_all_recipes()
-        elif USER_CHOISE in ['i', 'I', 'в', 'В']:
-            recipe_module.show_available_recipe()
-        elif USER_CHOISE in ['c', 'C', 'с', 'С']:
-            recipe_module.create_recipe()
-        elif USER_CHOISE in ['r', 'R', 'у', 'У']:
-            recipe_module.delete_recipe()
-        elif USER_CHOISE in ['g', 'G', 'р', 'Р']:
-            recipe_module.give_rating_to_recipe()
-        elif USER_CHOISE in ['a', 'A', 'а', 'А']:
+        USER_CHOISE = input().lower()
+        if USER_CHOISE in ['s', 'п']:
+            modules.recipe_module.show_all_recipes()
+        elif USER_CHOISE in ['i', 'в']:
+            modules.recipe_module.show_available_recipe()
+        elif USER_CHOISE in ['c', 'с']:
+            modules.recipe_module.create_recipe()
+        elif USER_CHOISE in ['r', 'у']:
+            modules.recipe_module.delete_recipe()
+        elif USER_CHOISE in ['g', 'р']:
+            modules.recipe_module.give_rating_to_recipe()
+        elif USER_CHOISE in ['a', 'а']:
             print(SEASON_SUGGESTION)
-        elif USER_CHOISE in ['e', 'E', 'з', 'З']:
+        elif USER_CHOISE in ['e', 'з']:
             sys.exit()
-        elif USER_CHOISE in ['o', 'O', 'к', 'К']:
+        elif USER_CHOISE in ['o', 'к']:
             print('\n', PROGRAM_LANGUAGE.COLLECTION_MENY)
-            collection_module.show_oils_collection()
+            modules.collection_module.show_oils_collection()
             # Navigation for Collection meny.
             while True:
-                USER_CHOISE = input()
-                if USER_CHOISE in ['m', 'M', 'м', 'М']:
+                USER_CHOISE = input().lower()
+                if USER_CHOISE in ['m', 'м']:
                     # Return in main meny.
                     print(PROGRAM_LANGUAGE.MAIN_MENY)
                     break
-                elif USER_CHOISE in ['o', 'O', 'к', 'К']:
-                    collection_module.show_oils_collection()
-                elif USER_CHOISE in ['s', 'S', 'о', 'О']:
-                    collection_module.show_missing_ingredients()
-                elif USER_CHOISE in ['a', 'A', 'д', 'Д']:
-                    collection_module.add_ingredient_to_collection()
-                elif USER_CHOISE in ['r', 'R', 'у', 'У']:
-                    collection_module.delete_ingredient_from_collect()
-                elif USER_CHOISE in ['f', 'F', 'н', 'Н']:
-                    collection_module.show_recipe_with_choosen_oil()
-                elif USER_CHOISE in ['e', 'E', 'з', 'З']:
+                elif USER_CHOISE in ['o', 'к']:
+                    modules.collection_module.show_oils_collection()
+                elif USER_CHOISE in ['s', 'о']:
+                    modules.collection_module.show_missing_ingredients()
+                elif USER_CHOISE in ['a', 'д']:
+                    modules.collection_module.add_ingredient_to_collection()
+                elif USER_CHOISE in ['r', 'у']:
+                    modules.collection_module.delete_ingredient_from_collect()
+                elif USER_CHOISE in ['f', 'н']:
+                    modules.collection_module.show_recipe_with_choosen_oil()
+                elif USER_CHOISE in ['e', 'з']:
                     sys.exit()
                 else:
                     print("There is no such option, input letter correctly\n")

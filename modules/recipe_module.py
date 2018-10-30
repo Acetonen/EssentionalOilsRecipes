@@ -3,9 +3,9 @@
 
 import shelve
 
-from recipe_class import Recipe
-from oil_class import Oil
-from absolyte_path_module import COLLECTION_PATH, RECIPE_PATH
+from modules.recipe_class import Recipe
+from modules.oil_class import Oil
+from modules.absolyte_path_module import COLLECTION_PATH, RECIPE_PATH
 
 
 def show_all_recipes():
