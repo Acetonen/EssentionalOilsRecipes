@@ -42,7 +42,6 @@ def create_recipe():
 
 def delete_recipe():
     """Delete recipe from base."""
-<<<<<<< HEAD
     recipe_number = input("Input number of recipe to delete: ")
     base_size = give_size_of_recipe_base()
     if check_is_it_number_in_range(recipe_number, base_size):
@@ -66,17 +65,6 @@ def give_size_of_recipe_base():
     with shelve.open(RECIPE_PATH) as base:
         base_size = len(base)
     return base_size
-=======
-    recipe_number = input("Input nubmber of recipe to delete: ")
-    base = shelve.open(RECIPE_PATH)
-    if check_is_it_number_in_range(recipe_number, len(base)):
-        recipe_number = int(recipe_number)
-        sorted_base = sorted(base)
-        recipe = sorted_base[recipe_number - 1]
-        base.pop(recipe, None)
-        print("\nRecipe '{}' deleted.\n".format(recipe))
-    base.close()
->>>>>>> 13830e729c51abcbf014966160abaf1bf34d8b83
 
 
 def show_available_recipe():
