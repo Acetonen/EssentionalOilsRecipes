@@ -10,25 +10,20 @@ from modules.absolyte_path_module import RECIPE_PATH
 def give_item_by_tag(tags):
     """Creation liistst of elements from base by tegs."""
     with shelve.open(RECIPE_PATH) as base:
-        base_list = [key.lower() for (key, value) in base.items()]
-    give_item_by_tag_recipe_list = ''
-    for item in base_list:
-        for tag in tags:
-            if tag in item:
-                give_item_by_tag_recipe_list += item + "; "
-    return give_item_by_tag_recipe_list
+        base_list = [recipe.lower() for recipe in base]
+    recipes_by_tag = [rec for rec in base_list for tag in tags if tag in rec]
+    return "; ".join(recipes_by_tag)
 
 
 def give_season_suggestion():
     """Give suggest recipes by current season."""
-    # Find current month.
     current_month = datetime.datetime.now().month
     all_month = (
-        ' ', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
-        'июль', 'август', 'сентябрь', 'октябрь', 'ноябрября', 'декабрь')
+        None, 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+        'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь')
 
-    # Outumn.
-    if 9 <= current_month <= 11:
+    # Autumn.
+    if current_month in [9, 10, 11]:
         month_list = [
             'осень', 'осенний', 'осеннее', 'осенние', 'осенняя', 'сентябрь',
             'октябрь', 'ноябрь', 'сентября', 'октября', 'ноября',
@@ -63,7 +58,7 @@ _______________¶¶     Рекомендуем:
     """
 
     # Winter.
-    elif current_month == 12 or current_month == 1 or current_month == 2:
+    elif current_month in [1, 2, 12]:
         month_list = [
             'зима', 'зимний', 'зимнее', 'зимние', 'зимняя', 'январь',
             'декабрь', 'февраль', 'декабря', 'января', 'февраля',
@@ -102,7 +97,7 @@ ___________
     """
 
     # Spring.
-    elif 3 <= current_month <= 5:
+    elif current_month in [3, 4, 5]:
         month_list = [
             'весна', 'весенний', 'весеннее', 'весенние', 'весенняя', 'март',
             'апрель', 'май', 'марта', 'апреля', 'мая', 'мартовский',
@@ -136,7 +131,7 @@ ___________$
    """
 
     # Summer.
-    elif 6 <= current_month <= 8:
+    elif current_month in [6, 7, 8]:
         month_list = [
             'лето', 'летний', 'летнее', 'летние', 'летняя', 'июнь', 'июль',
             'август', 'июля', 'июня', 'августа', 'июньский', 'июльский',

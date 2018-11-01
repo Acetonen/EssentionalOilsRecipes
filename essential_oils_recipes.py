@@ -13,20 +13,20 @@ from localisations import suggestions_ru
 def choose_language():
     """Choose program language."""
     print("""
-    Choose the choise / Выберете язык
+    Choose language / Выберете язык
     [E]/[А] - English
     [R]/[Р] - Russian
     """)
     while True:
         choise = input("").lower()
-        if choise in ['r', 'R', 'р', 'Р']:
+        if choise in ['r', 'р']:
             import localisations.rus as language
             break
-        elif choise in ['e', 'E', 'а', 'А']:
+        elif choise in ['e', 'а']:
             import localisations.en as language
             break
         else:
-            print("There is no such option, input letter correctl.\n")
+            print("There is no such option, input letter correct.\n")
     return language
 
 
