@@ -19,14 +19,22 @@ def show_oils_collection():
 def delete_ingredient_from_collect():
     """Delete ingredient from collection."""
     oil_number = input("Input number of deleted oil: ")
-    collection = shelve.open(COLLECTION_PATH)
-    if check_is_it_number_in_range(oil_number, len(collection)):
-        oil_number = int(oil_number)
-        collection_sort = sorted(collection)
-        collection.pop(collection_sort[oil_number - 1])
-        print("\nOil {} deleted.".format(collection_sort[oil_number - 1]))
-    collection.close()
+    collection_size = give_size_of_oil_collection()
+    if check_is_it_number_in_range(oil_number, collection_size):
+        oil = give_oil_by_position_in_collect(oil_number)
+        with shelve.open(COLLECTION_PATH) as collection:
+            collection.pop(oil)
+        print("\nOil {} deleted.".format(oil))
     show_oils_collection()
+
+
+def give_oil_by_position_in_collect(position):
+    """Sorted oil collection and gige oil name by position number"""
+    with shelve.open(COLLECTION_PATH) as collection:
+        oil_number = int(position)
+        collection_sort = sorted(collection)
+        oil = collection_sort[oil_number - 1]
+    return oil
 
 
 def check_is_it_number_in_range(number, list_range):
@@ -40,6 +48,13 @@ def check_is_it_number_in_range(number, list_range):
     else:
         print("\nYou must input NUMBER.\n")
     return check_number
+
+
+def give_size_of_oil_collection():
+    """Return size of current oils collection"""
+    with shelve.open(COLLECTION_PATH) as collection:
+        collection_size = len(collection)
+    return collection_size
 
 
 def add_ingredient_to_collection():
@@ -62,16 +77,10 @@ def show_missing_ingredients():
     priority = sorted(popularity_blocks)[::-1]
     # Check aveliability of ingredients from collection.
     for position in priority:
-        for ingredient in popularity_blocks[position]:
-            spaces = (longest_oil_name - len(ingredient)+1) * ' '
-            print("{}{}(in {} recipes)".format(
-                ingredient, spaces, position), end=' ')
-            with shelve.open(COLLECTION_PATH) as collection:
-                sorted_collection = sorted(collection)
-            if ingredient in sorted_collection:
-                print(" - in collection.")
-            else:
-                print()
+        for oil in popularity_blocks[position]:
+            spaces = (longest_oil_name - len(oil)+1) * ' '
+            print("{}{}(in {} recipes) {}".format(
+                oil, spaces, position, check_oil_avaliability(oil)))
 
 
 def create_dict_oils_popularity():
@@ -79,11 +88,10 @@ def create_dict_oils_popularity():
     Create dictionary where keys are number in recipes, values are ingredients.
     """
     list_of_all_recipes_oils = []
-    base = shelve.open(RECIPE_PATH)
-    for recipe in base:
-        list_of_all_recipes_oils += list(base[recipe].oils.keys())
-    # Count number of ingredients.
-    base.close()
+    with shelve.open(RECIPE_PATH) as base:
+        for recipe in base:
+            list_of_all_recipes_oils += base[recipe].get_oils()
+    # Count frequency of oils occurrence in recipes.
     oils_popularity = {oil: list_of_all_recipes_oils.count(oil)
                        for oil in list_of_all_recipes_oils}
     # Creates blocks of popularity.
@@ -94,19 +102,27 @@ def create_dict_oils_popularity():
     return popularity_blocks, list_of_all_recipes_oils
 
 
+def check_oil_avaliability(oil):
+    """Check if curent oil in collection"""
+    with shelve.open(COLLECTION_PATH) as collection:
+        aveliability = ''
+        if oil in collection:
+            aveliability = " - in collection."
+    return aveliability
+
+
 def show_recipe_with_choosen_oil():
     """Search recipe with the ingredient."""
     oil_number = input("Input ingredient number: ")
-    with shelve.open(COLLECTION_PATH) as collection:
-        sorted_collection = sorted(collection)
-    if check_is_it_number_in_range(oil_number, len(sorted_collection)):
-        oil_number = int(oil_number)
-        print(f"\nRecipes contane '{sorted_collection[oil_number-1]}':\n")
+    collection_size = give_size_of_oil_collection()
+    if check_is_it_number_in_range(oil_number, collection_size):
+        oil = give_oil_by_position_in_collect(oil_number)
+        print(f"\nRecipes contane '{oil}':\n")
         list_of_recipes_names = []
         base = shelve.open(RECIPE_PATH)
         for recipe in base:
-            if sorted_collection[oil_number-1] in base[recipe].oils:
-                list_of_recipes_names.append(base[recipe].name)
+            if oil in base[recipe].get_oils():
+                list_of_recipes_names.append(recipe)
         sort_list = sorted(list_of_recipes_names)
         for recipe in sort_list:
             print(base[recipe])
@@ -118,7 +134,7 @@ def show_recipe_with_choosen_oil():
 def find_max_length(array):
     """Search element with maximum lenght."""
     max_length = 0
-    for i in array:
-        if len(i) > max_length:
-            max_length = len(i)
+    for element in array:
+        if len(element) > max_length:
+            max_length = len(element)
     return max_length

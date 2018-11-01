@@ -46,28 +46,27 @@ def delete_recipe():
     base = shelve.open(RECIPE_PATH)
     if check_is_it_number_in_range(recipe_number, len(base)):
         recipe_number = int(recipe_number)
-        keys = sorted(base)
-        base.pop(keys[recipe_number - 1], None)
-        print("\nRecipe '{}' deleted.\n".format(keys[recipe_number - 1]))
+        sorted_base = sorted(base)
+        recipe = sorted_base[recipe_number - 1]
+        base.pop(recipe, None)
+        print("\nRecipe '{}' deleted.\n".format(recipe))
     base.close()
 
 
 def show_available_recipe():
     """Otput recipes avaliable to make only."""
-    collection = shelve.open(COLLECTION_PATH)
-    sorted_collection = sorted(collection)
+    with shelve.open(COLLECTION_PATH) as collection:
+        sorted_collection = sorted(collection)
     not_enough_oils = True
     base = shelve.open(RECIPE_PATH)
     for recipe in base:
-        avaliable_recipe = True
-        for oil in list(base[recipe].oils):
+        for oil in base[recipe].get_oils():
             if oil not in sorted_collection:
-                avaliable_recipe = False
-        if avaliable_recipe:
+                break
+        else:
             not_enough_oils = False
             print(base[recipe])
     base.close()
-    collection.close()
     if not_enough_oils:
         print("\nSeems like you havn't enough oils for any recipe :'(\n")
 
@@ -82,9 +81,10 @@ def give_rating_to_recipe():
         recipe_number = int(recipe_number)
         rating = int(rating)
         sorted_base = sorted(base)
-        recipe = base[sorted_base[recipe_number - 1]]
-        recipe.rating = rating
-        base[sorted_base[recipe_number - 1]] = recipe
+        choosen_recipe = sorted_base[recipe_number - 1]
+        temp_recipe = base[choosen_recipe]
+        temp_recipe.set_rating(rating)
+        base[choosen_recipe] = temp_recipe
     base.close()
 
 

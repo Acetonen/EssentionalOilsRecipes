@@ -19,10 +19,10 @@ def choose_language():
     """)
     while True:
         choise = input("").lower()
-        if choise in ['r', 'R', 'р', 'Р']:
+        if choise in ['r', 'р']:
             import localisations.rus as language
             break
-        elif choise in ['e', 'E', 'а', 'А']:
+        elif choise in ['e', 'а']:
             import localisations.en as language
             break
         else:
