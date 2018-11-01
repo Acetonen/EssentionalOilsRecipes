@@ -9,6 +9,15 @@ class Recipe:
         self.oils = oil
         self.rating = rating
 
+    def get_oils(self):
+        """Get sorted oil list from recipe"""
+        oils_list = [oil for oil in self.oils]
+        return sorted(oils_list)
+
+    def set_rating(self, rating):
+        """Set rating to recipe"""
+        self.rating = rating
+
     def __str__(self):
         """Beauty output of classs objects"""
         oils_print = ''
